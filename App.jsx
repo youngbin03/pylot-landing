@@ -572,6 +572,156 @@ const IntroSection = () => {
   );
 };
 
+// Stage Section Component
+const StageSection = () => {
+  const [currentStage, setCurrentStage] = useState('pre-product');
+  const [selectedItem, setSelectedItem] = useState(null);
+  
+  const stages = [
+    {
+      id: 'pre-product',
+      title: 'Pre-Product',
+      items: [
+        {
+          title: '문제 정의 및 아이디어 구체화',
+          tags: ['기획서', '시장조사']
+        },
+        {
+          title: '고객 문제 검증 및 솔루션 탐색',
+          tags: ['고객인터뷰']
+        },
+        {
+          title: '핵심 UX/UI 설계',
+          tags: ['와이어프레임', '기능정의서']
+        }
+      ]
+    },
+    {
+      id: 'product-market-fit',
+      title: 'Product-Market Fit',
+      items: [
+        {
+          title: '디자인 기반 사용성 검증',
+          tags: ['Figma', '프로토타입']
+        },
+        {
+          title: '최소 기능 제품(MVP) 시장성 검증',
+          tags: ['MVP', '베타버전']
+        },
+        {
+          title: '정식 출시 전 최종 점검',
+          tags: ['클로즈베타', '버그리포트']
+        }
+      ]
+    },
+    {
+      id: 'scale-up',
+      title: 'Scale-Up',
+      items: [
+        {
+          title: '초기 리텐션 개선 및 활성화',
+          tags: ['AhaMoment', '온보딩']
+        },
+        {
+          title: '신규 기능 가치 검증 및 개선',
+          tags: ['기능사용률', 'A/B테스트']
+        },
+        {
+          title: '핵심 지표(KPI) 성장 및 최적화',
+          tags: ['전환율(CRO)', '퍼널분석']
+        }
+      ]
+    }
+  ];
+
+  return (
+    <section className="py-20 bg-black">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-12 fade-in">
+          당신의 아이디어는<br/>어느 단계에 있나요?
+          </h2>
+        
+                  {/* Stage Navigation */}
+          <div className="flex space-x-4 mb-12">
+            {stages.map((stage) => (
+              <button
+                key={stage.id}
+                onClick={() => setCurrentStage(stage.id)}
+                className={`text-base font-medium transition-all duration-300 pb-2 focus:outline-none focus-visible:outline-none ${
+                currentStage === stage.id
+                  ? 'text-white border-b-2 border-white'
+                  : 'text-white/50 hover:text-white/70'
+              }`}
+            >
+              {stage.title}
+            </button>
+          ))}
+        </div>
+        
+        {/* Stage Content */}
+                <div className="space-y-4 max-w-4xl mx-auto">
+          {stages.find(stage => stage.id === currentStage)?.items.map((item, index) => (
+            <div key={index}>
+              {index > 0 && <div className="h-px bg-white/40 my-4" />}
+              <div 
+                className="flex items-center justify-between gap-4 cursor-pointer group"
+                onClick={() => setSelectedItem(currentStage + '-' + index)}
+              >
+                  <div className="flex-1">
+                    <h3 className="text-white text-lg font-medium mb-3">{item.title}</h3>
+                    <div className="flex gap-3">
+                      {item.tags.map((tag, tagIndex) => (
+                        <span
+                          key={tagIndex}
+                          className="text-white/70 text-sm"
+                        >
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="relative w-5 h-5 flex-shrink-0 min-h-0">
+                    <div className={`absolute inset-0 rounded-full border-2 transition-all duration-200 ${
+                      selectedItem === currentStage + '-' + index
+                        ? 'bg-white border-white scale-100'
+                        : 'border-white/40 group-hover:border-white/80 scale-95 group-hover:scale-100'
+                    }`} />
+                    {selectedItem === currentStage + '-' + index && (
+                      <svg
+                        className="absolute inset-0 w-full h-full text-black p-[3px] transform scale-90"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom Button */}
+        <div className="flex justify-center mt-12">
+          <button
+            className={`w-full sm:w-auto px-8 py-3 font-medium rounded-lg transition-all duration-300 ${
+              selectedItem
+                ? 'bg-white text-black hover:bg-gray-100'
+                : 'text-white border border-white/60 hover:border-white'
+            }`}
+          >
+            테스트 시나리오 보기
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 // Solution Section Component
 const SolutionSection = ({ onOpenModal }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -683,7 +833,7 @@ const SolutionSection = ({ onOpenModal }) => {
             3단계 프로토콜로 확실한 인사이트를 얻으세요
           </p>
         </div>
-
+        
         <div className="relative fade-in">
           {/* Carousel Container */}
           {/* Mobile View */}
@@ -701,7 +851,7 @@ const SolutionSection = ({ onOpenModal }) => {
               className="flex h-full transition-transform duration-700 ease-in-out"
               style={{ transform: `translateX(-${currentSlide * 100}%)` }}
             >
-              {steps.map((step, index) => (
+            {steps.map((step, index) => (
                 <div
                   key={index}
                   className="flex-shrink-0 w-full relative cursor-pointer"
@@ -741,10 +891,10 @@ const SolutionSection = ({ onOpenModal }) => {
                       {index === currentSlide ? step.description : ''}
                     </p>
                   </div>
+                    </div>
+                      ))}
+                    </div>
                 </div>
-              ))}
-            </div>
-          </div>
 
           {/* Desktop View */}
           <div 
@@ -774,8 +924,8 @@ const SolutionSection = ({ onOpenModal }) => {
                       }`}
                     />
                     <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]"></div>
-                  </div>
-
+          </div>
+          
                   {/* Content Container - Bottom aligned for desktop too */}
                   <div className="absolute inset-0 flex flex-col justify-end items-center text-center p-6 pb-8 pointer-events-none">
                     {/* Title - Always visible with size animation */}
@@ -795,10 +945,10 @@ const SolutionSection = ({ onOpenModal }) => {
                     }`}>
                       {step.description}
                     </p>
-                  </div>
-                </div>
-              ))}
             </div>
+          </div>
+              ))}
+        </div>
           </div>
 
           {/* Navigation Dots */}
@@ -1150,6 +1300,7 @@ const App = () => {
       <OnboardingSection />
       {/* <GlobeSection /> */}
       <SolutionSection onOpenModal={() => setIsModalOpen(true)} />
+      <StageSection />
       <DifferenceSection />
       <TargetSection />
       <SocialProofSection />
