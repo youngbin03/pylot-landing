@@ -358,15 +358,15 @@ const HeroSection = ({ onOpenModal }) => {
             이륙하는곳
           </h1>
           <div className="fade-in">
-                          <button
-                onClick={onOpenModal}
+            <button
+              onClick={onOpenModal}
                 className="mobile-btn px-6 py-4 sm:px-8 sm:py-5 bg-black/60 border border-white/60 text-white font-semibold text-lg rounded-md backdrop-blur-sm active:bg-white active:text-black transition-colors duration-150 flex items-center gap-2 focus:outline-none focus-visible:outline-none"
               >
                 아이디어 진단받기
                 <svg className="w-4 h-4" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M11.9893 5.58371L12.2471 5.89914L11.9893 6.21555L8.10059 10.9782L7.3252 10.3454L10.5479 6.39914L1.39941 6.39914L1.39941 5.39914L10.5479 5.39914L7.3252 1.45383L8.10059 0.821014L11.9893 5.58371Z" fill="currentColor" fillOpacity="0.8" />
                 </svg>
-              </button>
+            </button>
           </div>
         </div>
       </div>
@@ -387,7 +387,7 @@ const OnboardingSection = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-white/70 text-lg sm:text-xl font-semibold mb-4 fade-in">
           확신을 가지고 출발하세요
-        </h2>
+          </h2>
         
         {/* First Problem */}
         <div className="mb-6 fade-in">
@@ -429,7 +429,7 @@ const OnboardingSection = () => {
             </button>
           </div>
         </div>
-
+        
         {/* Second Problem */}
         <div className="mb-6 fade-in">
           <div className="h-px bg-white/20 mb-6"></div>
@@ -468,8 +468,8 @@ const OnboardingSection = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
             </button>
-          </div>
-      </div>
+                </div>
+              </div>
 
         {/* Third Problem */}
         <div className="mb-6 fade-in">
@@ -482,8 +482,8 @@ const OnboardingSection = () => {
                   alt="사용자 이탈" 
                   className="w-full h-full object-cover"
                 />
-              </div>
             </div>
+        </div>
             <div className="flex-1 min-w-0">
               <h3 className="text-white text-sm lg:text-base font-semibold mb-1 lg:mb-2 whitespace-pre-line">
                 {"제품 출시 후 사용자 이탈의\n 이유를 모르고 있나요?"}
@@ -669,7 +669,7 @@ const StageSection = () => {
                   {stage.title}
                 </button>
               ))}
-        </div>
+                  </div>
         
             {/* Stage Content */}
             <div className="space-y-4 max-w-4xl">
@@ -680,7 +680,7 @@ const StageSection = () => {
                     className="flex items-center justify-between gap-4 cursor-pointer group"
                     onClick={() => setSelectedItem(currentStage + '-' + index)}
                   >
-                      <div className="flex-1">
+                <div className="flex-1">
                         <h3 className="text-white text-lg font-medium mb-3">{item.title}</h3>
                         <div className="flex gap-3">
                           {item.tags.map((tag, tagIndex) => (
@@ -689,10 +689,10 @@ const StageSection = () => {
                               className="text-white/70 text-sm"
                             >
                               #{tag}
-                            </span>
-                          ))}
-                </div>
-              </div>
+                        </span>
+                      ))}
+                    </div>
+                    </div>
                       <div className="relative w-5 h-5 flex-shrink-0 min-h-0">
                         <div className={`absolute inset-0 rounded-full border-2 transition-all duration-200 ${
                           selectedItem === currentStage + '-' + index
@@ -713,9 +713,9 @@ const StageSection = () => {
                           </svg>
                         )}
                       </div>
-                    </div>
-            </div>
-          ))}
+                </div>
+              </div>
+            ))}
             </div>
             
             {/* Desktop Bottom Button */}
@@ -730,9 +730,9 @@ const StageSection = () => {
                 테스트 시나리오 보기
               </button>
             </div>
+            </div>
           </div>
-        </div>
-
+          
         {/* Mobile Layout */}
         <div className="lg:hidden">
           {/* Stage Navigation */}
@@ -750,8 +750,8 @@ const StageSection = () => {
                 {stage.title}
               </button>
             ))}
-          </div>
-          
+              </div>
+              
           {/* Stage Content */}
           <div className="space-y-4 max-w-4xl">
           {stages.find(stage => stage.id === currentStage)?.items.map((item, index) => (
@@ -772,7 +772,7 @@ const StageSection = () => {
                           #{tag}
                         </span>
                       ))}
-                    </div>
+            </div>
                   </div>
                   <div className="relative w-5 h-5 flex-shrink-0 min-h-0">
                     <div className={`absolute inset-0 rounded-full border-2 transition-all duration-200 ${
@@ -810,7 +810,7 @@ const StageSection = () => {
           >
             테스트 시나리오 보기
           </button>
-        </div>
+          </div>
         </div>
       </div>
     </section>
@@ -882,7 +882,7 @@ const PricingSection = ({ onOpenModal }) => {
     setCurrentPrice(calculatePrice());
   }, [selectedStage, numberOfTesters, detailedTarget, includeLogin]);
 
-    return (
+  return (
     <section className="pt-20 bg-black">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl sm:text-3xl lg:text-4xl font-bold text-white mb-4 text-left fade-in">
@@ -913,7 +913,7 @@ const PricingSection = ({ onOpenModal }) => {
           {/* Left Side - Options */}
           <div className="space-y-8">
             {/* Test Stage Selection */}
-            <div>
+                <div>
               <h3 className="text-xl font-semibold text-white mb-6">테스트 단계</h3>
               <div className="grid gap-4">
                 {stages.map((stage) => (
@@ -936,14 +936,14 @@ const PricingSection = ({ onOpenModal }) => {
                     <div className="flex-1">
                       <div className="font-semibold text-white mb-1">[{stage.title}]</div>
                       <div className="text-white/70 text-sm">{stage.description}</div>
-                  </div>
+                </div>
                     <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                       selectedStage === stage.id ? 'border-white bg-white' : 'border-white/50'
                     }`}>
                       {selectedStage === stage.id && (
                         <div className="w-2 h-2 rounded-full bg-black"></div>
                       )}
-                </div>
+              </div>
                   </label>
                 ))}
                     </div>
@@ -1010,9 +1010,9 @@ const PricingSection = ({ onOpenModal }) => {
                         {option.label}
                       </button>
                       ))}
-                    </div>
-                </div>
-
+            </div>
+          </div>
+          
                 {/* Detailed Target */}
                 <div>
                   <label className="block text-white/80 mb-2">상세타겟</label>
@@ -1022,9 +1022,9 @@ const PricingSection = ({ onOpenModal }) => {
                     placeholder="예: 의료 업계 종사자, OTT 구독 경험 1년 이상"
                     className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-white/60 min-h-[80px] transition-colors duration-200"
                   />
-              </div>
-              </div>
             </div>
+          </div>
+        </div>
 
             {/* Login Feature Toggle */}
             <div>
@@ -1043,7 +1043,7 @@ const PricingSection = ({ onOpenModal }) => {
                     }`}
                   />
                 </button>
-              </div>
+      </div>
             </div>
           </div>
 
@@ -1066,19 +1066,19 @@ const PricingSection = ({ onOpenModal }) => {
                   <div className="flex justify-between">
                     <span>테스트 단계:</span>
                     <span>{stages.find(s => s.id === selectedStage)?.title}</span>
-                  </div>
+              </div>
                   <div className="flex justify-between">
                     <span>테스터:</span>
                     <span>{numberOfTesters}명</span>
-                  </div>
+            </div>
                   <div className="flex justify-between">
                     <span>나이 조건:</span>
                     <span>{targetAge || '제한 없음'}</span>
-                  </div>
+        </div>
                   <div className="flex justify-between">
                     <span>성별 조건:</span>
                     <span>{targetGender === 'male' ? '남성' : targetGender === 'female' ? '여성' : '선택안함'}</span>
-                  </div>
+      </div>
                   <div className="flex justify-between">
                     <span>상세 타겟:</span>
                     <span className="text-right max-w-[150px] truncate">
@@ -1236,7 +1236,7 @@ const SolutionSection = ({ onOpenModal }) => {
         <div className="mb-12 sm:mb-16">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6 fade-in max-w-3xl">
             데이터로 아이디어의 <br/> 성공 항로를 설계합니다.
-          </h2>
+        </h2>
           <p className="text-lg sm:text-xl text-white/70 max-w-2xl fade-in">
             3단계 프로토콜로 확실한 인사이트를 얻으세요
           </p>
@@ -1299,11 +1299,11 @@ const SolutionSection = ({ onOpenModal }) => {
                       {index === currentSlide ? step.description : ''}
                     </p>
             </div>
-          </div>
-                      ))}
+            </div>
+          ))}
         </div>
-                </div>
-
+        </div>
+        
           {/* Desktop View */}
           <div 
             className="hidden lg:block relative h-[600px] overflow-hidden"
@@ -1359,20 +1359,57 @@ const SolutionSection = ({ onOpenModal }) => {
         </div>
           </div>
 
-          {/* Navigation Dots */}
-          <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 flex space-x-1">
-            {steps.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentSlide(index)}
-                className={`w-2 h-2 min-h-0 min-w-0 p-0 rounded-full transition-all duration-300 ${
-                  index === currentSlide
-                    ? 'bg-white scale-110'
-                    : 'bg-white/30 hover:bg-white/50'
-                }`}
-              />
-            ))}
-          </div>
+          {/* Navigation Row - Bottom */}
+          <div className="absolute -bottom-8 left-0 right-0 flex items-center justify-between px-4">
+            {/* Left Arrow */}
+            <button
+              onClick={prevSlide}
+              className="w-10 h-10 flex items-center justify-center text-white focus:outline-none focus-visible:outline-none active:outline-none"
+              style={{ outline: 'none', border: 'none' }}
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+          </button>
+
+            {/* Dots Navigation - Center */}
+            <div className="flex space-x-1">
+              {steps.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentSlide(index)}
+                  className={`w-2 h-2 min-h-0 min-w-0 p-0 rounded-full transition-all duration-300 ${
+                    index === currentSlide
+                      ? 'bg-white scale-110'
+                      : 'bg-white/30 hover:bg-white/50'
+                  }`}
+                />
+              ))}
+            </div>
+
+            {/* Right Arrow */}
+            <button
+              onClick={nextSlide}
+              className="w-10 h-10 flex items-center justify-center text-white focus:outline-none focus-visible:outline-none active:outline-none"
+              style={{ outline: 'none', border: 'none' }}
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+          </button>
+        </div>
         </div>
 
 
@@ -1381,257 +1418,135 @@ const SolutionSection = ({ onOpenModal }) => {
   );
 };
 
-// Difference Section Component
-const DifferenceSection = () => {
-  const features = [
-    {
-      title: "실제 행동 데이터",
-      description: "화면 녹화 + 클릭/스크롤 로그"
-    },
-    {
-      title: "AI 분석 리포트",
-      description: "불일치·이탈 원인 자동 추출"
-    },
-    {
-      title: "빠른 실행",
-      description: "24시간 내 결과 제공"
-    }
-  ];
 
-  const comparison = [
-    { feature: "실제 사용 행동 분석", survey: "❌", Pylot: "✅" },
-    { feature: "AI 인사이트 도출", survey: "❌", Pylot: "✅" },
-    { feature: "화면 녹화 제공", survey: "❌", Pylot: "✅" },
-    { feature: "24시간 내 결과", survey: "❌", Pylot: "✅" }
-  ];
 
-  return (
-    <section className="py-20 bg-white">
-      <div className="container mx-auto px-6">
-        <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 fade-in">
-          데이터의 사각지대를 분석합니다.
-        </h2>
-        <p className="text-xl text-gray-600 text-center mb-16 fade-in">
-          사용자의 '의견' 뒤에 숨겨진 '행동' 데이터로 증명합니다.
-        </p>
-        
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6 fade-in">
-            {features.map((feature, index) => (
-              <div key={index} className="flex items-start gap-4">
-                <div className="w-6 h-6 bg-[#4A69FF] rounded-full flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="text-xl font-semibold mb-1">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.description}</p>
-                </div>
-              </div>
-            ))}
-            
-            <div className="mt-12">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b-2 border-gray-200">
-                    <th className="py-3 text-left">기능</th>
-                    <th className="py-3 text-center">설문 전용 툴</th>
-                    <th className="py-3 text-center">Pylot</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {comparison.map((row, index) => (
-                    <tr key={index} className="border-b border-gray-100">
-                      <td className="py-3">{row.feature}</td>
-                      <td className="py-3 text-center text-2xl">{row.survey}</td>
-                      <td className="py-3 text-center text-2xl">{row.Pylot}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-          
-          <div className="flex justify-center fade-in">
-            <div className="w-80 h-80 bg-gradient-to-br from-[#4A69FF]/20 to-[#4A69FF]/10 rounded-full flex items-center justify-center">
-              {/* 3D 이미지로 교체 */}
-              <img src="/images/ai.png" alt="AI Analysis" className="w-64 h-64 object-contain" />
-              {/* 임시 이모지 - 이미지 없을 때 */}
-              {/* <span className="text-8xl">🤖</span> */}
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
 
-// Target Section Component
-const TargetSection = () => {
-  const targets = [
-    {
-      role: "CEO",
-      icon: "👔",
-      description: "실패 리스크를 데이터로 관리하고, 투자자에게는 성공의 근거를 제시하세요."
-    },
-    {
-      role: "PM/기획자",
-      icon: "✏️",
-      description: "더 이상 팀원을 감으로 설득하지 마세요. 데이터로 우선순위를 증명하세요."
-    },
-    {
-      role: "마케터/디자이너",
-      icon: "🎯",
-      description: "고객의 숨은 의도를 데이터로 파악하고, 가장 효과적인 경험을 설계하세요."
-    }
-  ];
 
-  return (
-    <section className="py-20 bg-black">
-      <div className="container mx-auto px-6">
-        <h2 className="text-4xl md:text-5xl font-bold text-white text-center mb-16 fade-in">
-          팀을 위한 최고의 엔지니어 크루
-        </h2>
-        
-        <div className="grid md:grid-cols-3 gap-8">
-          {targets.map((target, index) => (
-            <div key={index} className="text-center fade-in">
-              <div className="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-[#4A69FF]/30 to-[#4A69FF]/10 rounded-2xl flex items-center justify-center">
-                {/* 3D 이미지로 교체 */}
-                {target.role === "CEO" && <img src="/images/ceo.png" alt="CEO" className="w-24 h-24 object-contain" />}
-                {target.role === "PM/기획자" && <img src="/images/pencil.png" alt="PM" className="w-24 h-24 object-contain" />}
-                {target.role === "마케터/디자이너" && <img src="/images/target.png" alt="Marketer" className="w-24 h-24 object-contain" />}
-                {/* 임시 이모지 - 이미지 없을 때 */}
-                {/* <span className="text-6xl">{target.icon}</span> */}
-              </div>
-              <h3 className="text-2xl font-semibold text-white mb-4">{target.role}</h3>
-              <p className="text-white/70">{target.description}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
 
-// Social Proof Section Component
-const SocialProofSection = () => {
-  const logos = ["Company A", "Company B", "Company C", "Company D", "Company E"];
-
-  return (
-    <section className="py-20 bg-white">
-      <div className="container mx-auto px-6">
-        <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 fade-in">
-          이미 많은 팀들이 Pylot과 함께<br />
-          성공적인 시작을 경험했습니다.
-        </h2>
-        
-        <div className="flex justify-center items-center gap-8 mb-12 fade-in">
-          {logos.map((logo, index) => (
-            <div key={index} className="w-32 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
-              <span className="text-gray-500 text-sm">{logo}</span>
-            </div>
-          ))}
-        </div>
-        
-        <div className="max-w-3xl mx-auto bg-gray-50 p-8 rounded-2xl fade-in">
-          <p className="text-xl italic text-gray-700 mb-4">
-            "Pylot 덕분에 2개월의 개발 시간과 수천만 원의 비용을 아꼈습니다. 무엇보다, 우리가 올바른 방향으로 가고 있다는 확신을 얻은 것이 가장 큰 수확입니다."
-          </p>
-          <p className="text-gray-600 font-semibold">- 주식회사 ABC / 김대표 CEO</p>
-        </div>
-      </div>
-    </section>
-  );
-};
 
 // Tester Recruitment Section Component
 const TesterRecruitmentSection = () => {
-  const benefits = [
-    {
-      icon: "☕️",
-      title: "커피 한 잔의 여유, 15분",
-      description: "평균 15분 내외의 짧은 테스트로 부담 없이 참여하세요."
-    },
-    {
-      icon: "📱",
-      title: "스마트폰만 있으면 OK",
-      description: "복잡한 장비나 전문 지식은 필요 없어요. 스마트폰 하나로 충분합니다."
-    },
-    {
-      icon: "💸",
-      title: "참여 즉시 쌓이는 리워드",
-      description: "테스트를 완료하면 약속된 리워드가 즉시 지급됩니다."
-    }
-  ];
-
   return (
-    <section className="py-20 bg-[#F7F7F7]">
-      <div className="container mx-auto px-6">
-        <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 fade-in">
-          스마트폰 하나로, 15분만에 부업 수익!
-        </h2>
+    <section className="bg-black">
+      {/* Hero Section with Background Image */}
+      <div className="py-20 relative overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: 'url(/images/HS-hero.webp)' }}
+        ></div>
         
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
-          {benefits.map((benefit, index) => (
-            <div key={index} className="bg-white p-6 rounded-2xl shadow-sm fade-in">
-              <div className="text-4xl mb-4">{benefit.icon}</div>
-              <h3 className="text-xl font-semibold mb-2">{benefit.title}</h3>
-              <p className="text-gray-600">{benefit.description}</p>
-            </div>
-          ))}
-        </div>
+        {/* Background Overlay */}
+        <div className="absolute inset-0 bg-black/70"></div>
         
-        <div className="flex justify-center gap-4 fade-in">
-          <button className="px-8 py-3 bg-[#4A69FF] text-white font-semibold rounded-lg hover:bg-[#3A59EF] transition-colors">
-            💼 지금 파일럿 되기
-          </button>
-          <button className="px-8 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
-            ℹ️ 참여 방법 보기
-          </button>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-// Final CTA Section Component
-const FinalCTASection = ({ onOpenModal }) => {
-  return (
-    <section className="py-20 bg-black relative overflow-hidden">
-      <div className="absolute inset-0 opacity-20">
-        <div className="w-full h-full bg-gradient-to-t from-[#4A69FF]/30 to-transparent" />
-      </div>
-      
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="text-center">
-          <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 fade-in">
-            이제, 당신의 아이디어를 이륙시킬 시간입니다.
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white my-6 fade-in">
+              스마트폰 15분, 새로운 수익
           </h2>
-          <p className="text-xl text-white/80 mb-12 max-w-3xl mx-auto fade-in">
-            Pylot의 데이터 기반 솔루션을 통해 성공을 향한 가장 빠른 항로를 발견하고, 자신 있게 다음 단계로 나아가십시오.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center fade-in">
-            <button
-              onClick={onOpenModal}
-              className="px-8 py-4 bg-[#4A69FF] text-white font-semibold rounded-lg hover:bg-[#3A59EF] transition-colors"
-            >
-              무료 진단 시작하기
-            </button>
-            <button className="px-8 py-4 border border-white/20 text-white rounded-lg hover:bg-white/10 transition-colors">
-              엔터프라이즈 상담
-            </button>
+            
+            <p className="text-lg sm:text-lg font-medium text-white mb-6 fade-in">
+              당신의 경험을 가치로 만들어보세요
+            </p>
+            
+
+          </div>
           </div>
         </div>
         
-        <div className="mt-16 flex justify-center fade-in">
-          {/* 3D 로켓 이미지로 교체 */}
-          <img src="/images/rocket.png" alt="Rocket Launch" className="w-64 h-64 object-contain" />
-          {/* 임시 이모지 - 이미지 없을 때 */}
-          {/* <div className="text-[200px] leading-none">🚀</div> */}
+      {/* Content Section with Black Background */}
+      <div className="pb-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <div className="space-y-6 text-left">
+              <p className="text-base sm:text-lg text-white/90 leading-relaxed fade-in mt-6">
+                출퇴근길 단 15분, 당신의 솔직한 경험이 새로운 서비스를 만드는 최고의 피드백이 됩니다. 30초면 끝나는 간단한 가입 후, 테스트 매칭을 위한 당신의 관심사와 프로필을 알려주세요. 내게 꼭 맞는 새로운 테스트가 등록되면 채널톡 알림을 보내드려요. 안내에 따라 편안하게 테스트를 진행해주세요.
+              </p>
+              
+              <p className="text-base sm:text-lg text-white/90 leading-relaxed fade-in">
+                당신의 소중한 시간에 대한 합리적인 보상, 테스트 완료 즉시 지급되는 리워드로 지금 바로 경험하세요.
+              </p>
+              
+            </div>
+            
+            {/* Process Steps Graph */}
+            <div className="mt-12 mb-8 fade-in">
+              <div className="relative max-w-2xl mx-auto">
+                {/* Text Labels */}
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-white text-xs sm:text-sm font-medium">수락</span>
+                  <span className="text-white text-xs sm:text-sm font-medium">설치</span>
+                  <span className="text-white text-xs sm:text-sm font-medium">수행</span>
+                  <span className="text-white text-xs sm:text-sm font-medium">제출</span>
+                  <span className="text-white text-xs sm:text-sm font-medium">리워드</span>
+                </div>
+                
+                {/* Dots and Lines */}
+                <div className="relative flex items-center justify-between px-1 pr-3">
+                  {/* Step 1 */}
+                  <div className="relative z-10">
+                    <div className="w-3 h-3 bg-white rounded-full shadow-2xl"></div>
+                    <div className="absolute inset-0 w-3 h-3 bg-white rounded-full blur-sm opacity-80"></div>
+                    <div className="absolute inset-0 w-3 h-3 bg-white rounded-full blur-md opacity-40"></div>
+                  </div>
+                  
+                  {/* Line 1 */}
+                  <div className="flex-1 h-px bg-gradient-to-r from-white/60 to-white/40"></div>
+                  
+                  {/* Step 2 */}
+                  <div className="relative z-10">
+                    <div className="w-3 h-3 bg-white rounded-full shadow-2xl"></div>
+                    <div className="absolute inset-0 w-3 h-3 bg-white rounded-full blur-sm opacity-80"></div>
+                    <div className="absolute inset-0 w-3 h-3 bg-white rounded-full blur-md opacity-40"></div>
+                  </div>
+                  
+                  {/* Line 2 */}
+                  <div className="flex-1 h-px bg-gradient-to-r from-white/60 to-white/40"></div>
+                  
+                  {/* Step 3 */}
+                  <div className="relative z-10">
+                    <div className="w-3 h-3 bg-white rounded-full shadow-2xl"></div>
+                    <div className="absolute inset-0 w-3 h-3 bg-white rounded-full blur-sm opacity-80"></div>
+                    <div className="absolute inset-0 w-3 h-3 bg-white rounded-full blur-md opacity-40"></div>
+                  </div>
+                  
+                  {/* Line 3 */}
+                  <div className="flex-1 h-px bg-gradient-to-r from-white/60 to-white/40"></div>
+                  
+                  {/* Step 4 */}
+                  <div className="relative z-10">
+                    <div className="w-3 h-3 bg-white rounded-full shadow-2xl"></div>
+                    <div className="absolute inset-0 w-3 h-3 bg-white rounded-full blur-sm opacity-80"></div>
+                    <div className="absolute inset-0 w-3 h-3 bg-white rounded-full blur-md opacity-40"></div>
+                  </div>
+                  
+                  {/* Line 4 */}
+                  <div className="flex-1 h-px bg-gradient-to-r from-white/60 to-white/40"></div>
+                  
+                  {/* Step 5 */}
+                  <div className="relative z-10">
+                    <div className="w-3 h-3 bg-white rounded-full shadow-2xl"></div>
+                    <div className="absolute inset-0 w-3 h-3 bg-white rounded-full blur-sm opacity-80"></div>
+                    <div className="absolute inset-0 w-3 h-3 bg-white rounded-full blur-md opacity-40"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Button at the bottom */}
+            <div className="flex justify-left mt-12 fade-in">
+              <button className="w-full sm:w-auto px-8 py-4 border border-white text-white font-semibold text-lg rounded-lg hover:bg-white hover:text-black transition-all duration-300">
+                지금 파일럿 되기
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
   );
 };
+
+
 
 // Footer Component
 const Footer = () => {
@@ -1642,49 +1557,24 @@ const Footer = () => {
           <div>
             <h3 className="text-white font-semibold mb-4">Pylot</h3>
             <p className="text-white/60 text-sm">
-              데이터로 증명하고,<br />
-              확신으로 출시하세요.
+              데이터로 증명하고, 확신으로 출시하세요.
             </p>
           </div>
           
           <div>
             <h4 className="text-white font-semibold mb-4">서비스</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-white/60 hover:text-white text-sm">회사소개</a></li>
+              <li><a href="#" className="text-white/60 hover:text-white text-sm">문의하기</a></li>
               <li><a href="#" className="text-white/60 hover:text-white text-sm">이용약관</a></li>
               <li><a href="#" className="text-white/60 hover:text-white text-sm">개인정보처리방침</a></li>
             </ul>
           </div>
           
-          <div>
-            <h4 className="text-white font-semibold mb-4">고객지원</h4>
-            <ul className="space-y-2">
-              <li><a href="#" className="text-white/60 hover:text-white text-sm">FAQ</a></li>
-              <li><a href="#" className="text-white/60 hover:text-white text-sm">문의하기</a></li>
-              <li><a href="#" className="text-white/60 hover:text-white text-sm">파트너십</a></li>
-            </ul>
-          </div>
-          
-          <div>
-            <h4 className="text-white font-semibold mb-4">Connect</h4>
-            <div className="flex space-x-4">
-              <a href="#" className="text-white/60 hover:text-white">
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
-                </svg>
-              </a>
-              <a href="#" className="text-white/60 hover:text-white">
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
-                </svg>
-              </a>
-            </div>
-          </div>
         </div>
         
         <div className="mt-8 pt-8 border-t border-white/10">
           <p className="text-center text-white/40 text-sm">
-            © 2024 Pylot. All rights reserved.
+            © 2025 Pylot. All rights reserved.
           </p>
         </div>
       </div>
@@ -1710,11 +1600,7 @@ const App = () => {
       <SolutionSection onOpenModal={() => setIsModalOpen(true)} />
       <StageSection />
       <PricingSection onOpenModal={() => setIsModalOpen(true)} />
-      <DifferenceSection />
-      <TargetSection />
-      <SocialProofSection />
       <TesterRecruitmentSection />
-      <FinalCTASection onOpenModal={() => setIsModalOpen(true)} />
       <Footer />
       
       <ApplicationModal 
