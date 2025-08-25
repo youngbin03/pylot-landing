@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import Globe from 'globe.gl';
+import React, { useState, useEffect } from 'react';
+import GlobeSection from './src/components/GlobeSection';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
 
@@ -375,122 +375,6 @@ const HeroSection = ({ onOpenModal }) => {
 };
 
 // Intro Section Component
-const GlobeSection = () => {
-  const globeRef = useRef();
-  const [routes, setRoutes] = useState([]);
-  const [airports, setAirports] = useState([]);
-
-  useEffect(() => {
-    // 한국 중심의 주요 국제 항공 경로
-    const mainRoutes = [
-      // 아시아 태평양
-      { srcIata: 'ICN', srcLat: 37.4691, srcLng: 126.4505, dstIata: 'HND', dstLat: 35.5494, dstLng: 139.7798 },
-      { srcIata: 'ICN', srcLat: 37.4691, srcLng: 126.4505, dstIata: 'PEK', dstLat: 40.0799, dstLng: 116.6031 },
-      { srcIata: 'ICN', srcLat: 37.4691, srcLng: 126.4505, dstIata: 'HKG', dstLat: 22.3080, dstLng: 113.9185 },
-      { srcIata: 'ICN', srcLat: 37.4691, srcLng: 126.4505, dstIata: 'SIN', dstLat: 1.3644, dstLng: 103.9915 },
-      // 유럽
-      { srcIata: 'ICN', srcLat: 37.4691, srcLng: 126.4505, dstIata: 'LHR', dstLat: 51.4700, dstLng: -0.4543 },
-      { srcIata: 'ICN', srcLat: 37.4691, srcLng: 126.4505, dstIata: 'CDG', dstLat: 49.0097, dstLng: 2.5479 },
-      // 북미
-      { srcIata: 'ICN', srcLat: 37.4691, srcLng: 126.4505, dstIata: 'LAX', dstLat: 33.9416, dstLng: -118.4085 },
-      { srcIata: 'ICN', srcLat: 37.4691, srcLng: 126.4505, dstIata: 'JFK', dstLat: 40.6413, dstLng: -73.7781 }
-    ];
-
-    const processedRoutes = mainRoutes.map(route => ({
-      ...route,
-      srcAirport: { lat: route.srcLat, lng: route.srcLng },
-      dstAirport: { lat: route.dstLat, lng: route.dstLng },
-      airline: 'Pylot Air',
-      arcAlt: 0.3
-    }));
-
-    setRoutes(processedRoutes);
-    setAirports(mainRoutes.flatMap(route => [
-      { lat: route.srcLat, lng: route.srcLng },
-      { lat: route.dstLat, lng: route.dstLng }
-    ]));
-  }, []);
-
-  useEffect(() => {
-    if (!globeRef.current) return;
-
-    // 기존 캔버스 정리
-    while (globeRef.current.firstChild) {
-      globeRef.current.removeChild(globeRef.current.firstChild);
-    }
-
-    const OPACITY = 0.35;
-    const globe = Globe()
-      .globeImageUrl('//cdn.jsdelivr.net/npm/three-globe/example/img/earth-night.jpg')
-      .backgroundColor('#000000')
-      .width(Math.min(window.innerWidth - 32, 800))
-      .height(window.innerWidth < 640 ? 280 : 360)
-      .pointOfView({ lat: 37.4691, lng: 126.4505, altitude: 2.5 })
-      .arcLabel(d => `${d.airline}: ${d.srcIata} → ${d.dstIata}`)
-      .arcStartLat(d => +d.srcAirport.lat)
-      .arcStartLng(d => +d.srcAirport.lng)
-      .arcEndLat(d => +d.dstAirport.lat)
-      .arcEndLng(d => +d.dstAirport.lng)
-      .arcAltitude(d => d.arcAlt)
-      .arcDashLength(0.25)
-      .arcDashGap(1)
-      .arcDashInitialGap(() => Math.random())
-      .arcDashAnimateTime(4000)
-      .arcColor(() => [`rgba(255, 255, 255, ${OPACITY})`, `rgba(255, 255, 255, ${OPACITY})`])
-      .arcsTransitionDuration(2000)
-      .pointColor(() => '#ffffff')
-      .pointAltitude(0)
-      .pointRadius(0.02)
-      .pointsMerge(true)
-      .showAtmosphere(true)
-      .atmosphereColor('#ffffff')
-      .atmosphereAltitude(0.15)(globeRef.current);
-
-    globe
-      .pointsData(airports)
-      .arcsData(routes);
-
-    // Auto-rotate
-    globe.controls().autoRotate = true;
-    globe.controls().autoRotateSpeed = 0.35;
-
-    const handleResize = () => {
-      globe.width(Math.min(window.innerWidth - 32, 800));
-      globe.height(window.innerWidth < 640 ? 280 : 360);
-    };
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      if (globe) {
-        globe.controls().dispose();
-        globe._destructor();
-        // 캔버스 정리
-        while (globeRef.current?.firstChild) {
-          globeRef.current.removeChild(globeRef.current.firstChild);
-        }
-      }
-    };
-  }, [routes, airports]);
-
-  return (
-    <section className="bg-black py-16">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-2">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-            전 세계 어디서나 검증된 데이터
-          </h2>
-          <p className="text-white/70 text-base sm:text-lg">
-            글로벌 사용자들의 실제 데이터를 기반으로 검증합니다
-          </p>
-        </div>
-        <div className="flex justify-center items-center">
-          <div ref={globeRef} className="w-full max-w-[800px] h-[280px] sm:h-[360px] relative" />
-        </div>
-      </div>
-    </section>
-  );
-};
 
 const OnboardingSection = () => {
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -602,7 +486,7 @@ const OnboardingSection = () => {
             </div>
             <div className="flex-1 min-w-0">
               <h3 className="text-white text-sm lg:text-base font-semibold mb-1 lg:mb-2 whitespace-pre-line">
-                {"제품 출시 후\n사용자 이탈의 이유를 모르고 있나요?"}
+                {"제품 출시 후 사용자 이탈의\n 이유를 모르고 있나요?"}
               </h3>
               <p className={`text-white/70 text-xs lg:text-sm leading-relaxed transition-all duration-300 ${
                 expandedIndex === 2 ? '' : 'line-clamp-2'
@@ -690,113 +574,250 @@ const IntroSection = () => {
 
 // Solution Section Component
 const SolutionSection = ({ onOpenModal }) => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
   const steps = [
     {
-      number: "1",
-      title: "앱 등록",
-      description: "시나리오·목표를 입력하면, 표준 시험계획서가 생성됩니다.",
-      tooltip: true,
-      image: "/images/app checklist.png"
+      title: "Step 1. 테스트 설계",
+      description: "검증하고 싶은 시나리오와 핵심 목표를 알려주세요. Pylot이 최적의 테스트 계획을 자동으로 구성합니다.",
+      image: "/images/effect-1.png"
     },
     {
-      number: "2",
-      title: "테스터 매칭 & 실행",
-      description: "타깃 페르소나에 맞춘 실사용자가 테스트합니다.",
-      badges: ["20대", "여성", "패션"],
-      image: "/images/user.png"
+      title: "Step 2. 실사용자 테스트 실행",
+      description: "타겟 페르소나와 완벽히 일치하는 실제 사용자들이 당신의 서비스를 직접 경험하고, 영상, 음성을 포함한 모든 행동 데이터가 수집됩니다.",
+      image: "/images/effect-2.png"
     },
     {
-      number: "3",
-      title: "AI 리포트",
-      description: "화면 녹화+클릭/스크롤 로그를 AI가 분석해 이탈 지점, 혼란 패턴, 개선 제안을 제공합니다.",
-      chips: ["이탈 지점", "혼란 패턴", "개선 제안"],
-      image: "/images/analysis.png"
+      title: "Step 3. AI 인사이트 리포트",
+      description: "단순한 피드백이 아닌, 데이터 기반의 명확한 문제점을 찾아냅니다. AI가 구체적인 개선 방안까지 포함된 최종 리포트를 제공합니다.",
+      image: "/images/effect-3.png"
     }
   ];
 
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev === steps.length - 1 ? 0 : prev + 1));
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev === 0 ? steps.length - 1 : prev - 1));
+  };
+
+  // 터치 이벤트 처리
+  const handleTouchStart = (e) => {
+    console.log('Touch start:', e.targetTouches[0].clientX);
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    e.preventDefault(); // 스크롤 방지
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = (e) => {
+    if (!touchStart || !touchEnd) {
+      console.log('No touch data:', { touchStart, touchEnd });
+      return;
+    }
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 30;
+    const isRightSwipe = distance < -30;
+    
+    console.log('Touch end:', { 
+      touchStart, 
+      touchEnd, 
+      distance, 
+      currentSlide,
+      isLeftSwipe, 
+      isRightSwipe 
+    });
+
+    if (isLeftSwipe && currentSlide < steps.length - 1) {
+      console.log('Swiping to next slide');
+      e.preventDefault();
+      nextSlide();
+    } else if (isRightSwipe && currentSlide > 0) {
+      console.log('Swiping to previous slide');
+      e.preventDefault();
+      prevSlide();
+    }
+    
+    // 상태 초기화
+    setTouchStart(null);
+    setTouchEnd(null);
+  };
+
+  // 키보드 이벤트 처리
+  const handleKeyDown = (e) => {
+    if (e.key === 'ArrowLeft' && currentSlide > 0) {
+      prevSlide();
+    } else if (e.key === 'ArrowRight' && currentSlide < steps.length - 1) {
+      nextSlide();
+    }
+  };
+
+  // 마우스 휠 이벤트 처리
+  const handleWheel = (e) => {
+    const isHorizontalScroll = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+    
+    if (isHorizontalScroll) {
+      e.preventDefault();
+      if (e.deltaX > 10 && currentSlide < steps.length - 1) {
+        nextSlide();
+      } else if (e.deltaX < -10 && currentSlide > 0) {
+        prevSlide();
+      }
+    }
+  };
+
   return (
     <section className="py-16 sm:py-20 lg:py-24 bg-black relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-[#4A69FF] rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#4A69FF] rounded-full blur-3xl"></div>
-      </div>
-      
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center mb-12 sm:mb-16 lg:mb-20">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4 sm:mb-6 fade-in">
-            <span className="text-[#4A69FF]">Pylot</span>은 오직 데이터로 <br className="hidden sm:block" />
-            성공을 보장합니다.
+        <div className="mb-12 sm:mb-16">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6 fade-in max-w-3xl">
+            데이터로 아이디어의 <br/> 성공 항로를 설계합니다.
           </h2>
-          <p className="text-lg sm:text-xl text-white/70 max-w-3xl mx-auto fade-in">
-            3단계 간단한 프로세스로 확실한 인사이트를 얻으세요.
+          <p className="text-lg sm:text-xl text-white/70 max-w-2xl fade-in">
+            3단계 프로토콜로 확실한 인사이트를 얻으세요
           </p>
         </div>
-        
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <div className="space-y-8 lg:space-y-12">
-            {steps.map((step, index) => (
-              <div key={index} className="flex gap-4 sm:gap-6 fade-in">
-                <div className="flex-shrink-0">
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r from-[#4A69FF] to-[#6B7FFF] text-white rounded-2xl flex items-center justify-center font-bold text-lg sm:text-xl shadow-lg">
-                    {step.number}
+
+        <div className="relative fade-in">
+          {/* Carousel Container */}
+          {/* Mobile View */}
+          <div 
+            className="block lg:hidden relative h-[500px] overflow-hidden rounded-2xl select-none"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onWheel={handleWheel}
+            onKeyDown={handleKeyDown}
+            tabIndex={0}
+            style={{ touchAction: 'pan-y pinch-zoom' }}
+          >
+            <div 
+              className="flex h-full transition-transform duration-700 ease-in-out"
+              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+            >
+              {steps.map((step, index) => (
+                <div
+                  key={index}
+                  className="flex-shrink-0 w-full relative cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentSlide(index);
+                  }}
+                >
+                  {/* Background with reduced blur */}
+                  <div className="relative h-full">
+                    <img
+                      src={step.image}
+                      alt={step.title}
+                      className={`w-full h-full object-cover object-top transition-all duration-400 ${
+                        index === currentSlide ? 'animate-image-highlight brightness-155' : 'brightness-90'
+                      }`}
+                    />
+                    <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]"></div>
                   </div>
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
-                      <img src={step.image} alt="" className="w-6 h-6 object-contain" />
-                    </div>
-                    <h3 className="text-xl sm:text-2xl font-bold text-white">
+
+                  {/* Content - Bottom aligned */}
+                  <div className="absolute inset-0 flex flex-col justify-end p-6 pb-8 pointer-events-none">
+                    <h3 
+                      className={`text-xl sm:text-2xl font-bold mb-3 transition-all duration-1000 ${
+                        index === currentSlide ? 'gradient-text-active' : 'text-white'
+                      }`}
+                    >
                       {step.title}
                     </h3>
+                    <p 
+                      className={`text-white/80 text-sm max-w-xl transition-all duration-1000 transform ${
+                        index === currentSlide
+                          ? 'translate-y-0 opacity-100 delay-400'
+                          : 'translate-y-4 opacity-0'
+                      }`}
+                    >
+                      {index === currentSlide ? step.description : ''}
+                    </p>
                   </div>
-                  <p className="text-white/80 mb-4 text-base sm:text-lg leading-relaxed">{step.description}</p>
-                  {step.badges && (
-                    <div className="flex gap-2 flex-wrap mb-2">
-                      {step.badges.map((badge, i) => (
-                        <span key={i} className="px-3 py-1 bg-white/10 text-white/90 rounded-full text-sm font-medium">
-                          {badge}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                  {step.chips && (
-                    <div className="flex gap-2 flex-wrap">
-                      {step.chips.map((chip, i) => (
-                        <span key={i} className="px-3 py-1 bg-[#4A69FF]/20 text-[#4A69FF] rounded-lg text-sm font-medium border border-[#4A69FF]/30">
-                          {chip}
-                        </span>
-                      ))}
-                    </div>
-                  )}
                 </div>
-              </div>
-            ))}
-            
-            <div className="pt-8">
-              <button
-                onClick={onOpenModal}
-                className="px-8 py-4 sm:px-10 sm:py-5 bg-gradient-to-r from-[#4A69FF] to-[#6B7FFF] text-white font-bold text-lg rounded-xl hover:scale-105 transition-all duration-300 shadow-lg shadow-[#4A69FF]/25"
-              >
-                🚀 내 아이템 테스트 시작
-              </button>
+              ))}
             </div>
           </div>
-          
-          <div className="relative fade-in">
-            <div className="relative w-full h-80 sm:h-96 lg:h-[500px] bg-gradient-to-br from-[#4A69FF]/20 to-[#4A69FF]/10 rounded-3xl flex items-center justify-center overflow-hidden">
-              {/* Background pattern */}
-              <div className="absolute inset-0 opacity-10">
-                <div className="absolute top-4 left-4 w-20 h-20 border-2 border-[#4A69FF] rounded-lg"></div>
-                <div className="absolute bottom-4 right-4 w-16 h-16 bg-[#4A69FF]/20 rounded-full"></div>
-                <div className="absolute top-1/2 left-1/4 w-12 h-12 bg-[#4A69FF]/30 rounded-lg transform rotate-45"></div>
-              </div>
-              
-              <img src="/images/analysis.png" alt="AI Dashboard" className="w-64 h-64 sm:w-80 sm:h-80 object-contain relative z-10" />
+
+          {/* Desktop View */}
+          <div 
+            className="hidden lg:block relative h-[600px] overflow-hidden"
+            onWheel={handleWheel}
+            onKeyDown={handleKeyDown}
+            tabIndex={0}
+          >
+            <div className="flex items-center justify-center h-full gap-6 px-8">
+              {steps.map((step, index) => (
+                <div
+                  key={index}
+                  className={`relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-700 ease-out ${
+                    index === currentSlide
+                      ? 'w-[580px] h-[450px] opacity-100 scale-[1.02] z-10'
+                      : 'w-[420px] h-[380px] opacity-75 scale-[0.98] hover:opacity-90 hover:scale-100'
+                  }`}
+                  onClick={() => setCurrentSlide(index)}
+                >
+                  {/* Background with reduced blur - Desktop no cropping */}
+                  <div className="relative h-full">
+                    <img
+                      src={step.image}
+                      alt={step.title}
+                      className={`w-full h-full object-cover transition-all duration-300 ${
+                        index === currentSlide ? 'animate-image-highlight brightness-185' : 'brightness-100'
+                      }`}
+                    />
+                    <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]"></div>
+                  </div>
+
+                  {/* Content Container - Bottom aligned for desktop too */}
+                  <div className="absolute inset-0 flex flex-col justify-end items-center text-center p-6 pb-8 pointer-events-none">
+                    {/* Title - Always visible with size animation */}
+                    <h3 className={`font-bold mb-4 leading-tight transition-all duration-1000 ${
+                      index === currentSlide 
+                        ? 'text-xl lg:text-2xl gradient-text-active opacity-100 scale-105' 
+                        : 'text-sm lg:text-base text-white/90 opacity-90 scale-100'
+                    }`}>
+                      {step.title}
+                    </h3>
+                    
+                    {/* Description - Always present but invisible when not active */}
+                    <p className={`text-white/80 text-sm lg:text-base max-w-md leading-relaxed transition-all duration-1000 ${
+                      index === currentSlide
+                        ? 'opacity-100 translate-y-0 delay-400'
+                        : 'opacity-0 translate-y-2'
+                    }`}>
+                      {step.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
+          </div>
+
+          {/* Navigation Dots */}
+          <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 flex space-x-1">
+            {steps.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentSlide(index)}
+                className={`w-2 h-2 min-h-0 min-w-0 p-0 rounded-full transition-all duration-300 ${
+                  index === currentSlide
+                    ? 'bg-white scale-110'
+                    : 'bg-white/30 hover:bg-white/50'
+                }`}
+              />
+            ))}
           </div>
         </div>
+
+
       </div>
     </section>
   );
@@ -1127,7 +1148,7 @@ const App = () => {
       <HeroSection onOpenModal={() => setIsModalOpen(true)} />
       <IntroSection />
       <OnboardingSection />
-      <GlobeSection />
+      {/* <GlobeSection /> */}
       <SolutionSection onOpenModal={() => setIsModalOpen(true)} />
       <DifferenceSection />
       <TargetSection />
