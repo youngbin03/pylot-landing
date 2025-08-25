@@ -636,19 +636,19 @@ const StageSection = () => {
 
   return (
     <section className="py-20 bg-black relative">
-      {/* Desktop Image - Absolute positioned */}
-      <div className="hidden lg:block absolute left-0 bottom-0 w-2/5 z-0">
-        <img 
-          src="/images/StageSection.jpg" 
-          alt="Stage Illustration" 
-          className="w-full h-auto"
-        />
-      </div>
+      {/* Desktop Background Image */}
+      <div 
+        className="hidden lg:block absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: 'url(/images/stagesection_background.jpg)' }}
+      ></div>
+      
+      {/* Background Overlay - Desktop only */}
+      <div className="hidden lg:block absolute inset-0 bg-black/60"></div>
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-12 fade-in">
           당신의 아이디어는<br/>어느 단계에 있나요?
-        </h2>
+          </h2>
 
         {/* Desktop Layout */}
         <div className="hidden lg:flex justify-end mb-12">
@@ -669,8 +669,8 @@ const StageSection = () => {
                   {stage.title}
                 </button>
               ))}
-            </div>
-            
+        </div>
+        
             {/* Stage Content */}
             <div className="space-y-4 max-w-4xl">
               {stages.find(stage => stage.id === currentStage)?.items.map((item, index) => (
@@ -691,8 +691,8 @@ const StageSection = () => {
                               #{tag}
                             </span>
                           ))}
-                        </div>
-                      </div>
+                </div>
+              </div>
                       <div className="relative w-5 h-5 flex-shrink-0 min-h-0">
                         <div className={`absolute inset-0 rounded-full border-2 transition-all duration-200 ${
                           selectedItem === currentStage + '-' + index
@@ -714,8 +714,21 @@ const StageSection = () => {
                         )}
                       </div>
                     </div>
-                </div>
-              ))}
+            </div>
+          ))}
+            </div>
+            
+            {/* Desktop Bottom Button */}
+            <div className="flex justify-end mt-12">
+              <button
+                className={`w-full px-8 py-3 font-medium rounded-lg transition-all duration-300 ${
+                  selectedItem
+                    ? 'bg-white text-black hover:bg-gray-100'
+                    : 'text-white border border-white/60 hover:border-white'
+                }`}
+              >
+                테스트 시나리오 보기
+              </button>
             </div>
           </div>
         </div>
@@ -798,6 +811,319 @@ const StageSection = () => {
             테스트 시나리오 보기
           </button>
         </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Pricing Section Component
+const PricingSection = ({ onOpenModal }) => {
+  const [selectedStage, setSelectedStage] = useState('pre-product');
+  const [numberOfTesters, setNumberOfTesters] = useState(20);
+  const [targetAge, setTargetAge] = useState('');
+  const [targetGender, setTargetGender] = useState('');
+  const [detailedTarget, setDetailedTarget] = useState('');
+  const [includeLogin, setIncludeLogin] = useState(false);
+  const [showPlanDetails, setShowPlanDetails] = useState(false);
+
+  const stages = [
+    {
+      id: 'pre-product',
+      title: 'Pre-Product',
+      description: '아이디어 검증 및 UX 설계 단계',
+      basePrice: 12500
+    },
+    {
+      id: 'product-market-fit',
+      title: 'Product-Market Fit',
+      description: 'MVP/프로토타입 시장성 검증 단계',
+      basePrice: 18750
+    },
+    {
+      id: 'scale-up',
+      title: 'Scale-Up',
+      description: '출시 후 성장 및 최적화 단계',
+      basePrice: 25000
+    }
+  ];
+
+  const ageOptions = [
+    { value: '', label: '나이 제한 없음' },
+    { value: '10-19', label: '10-19세' },
+    { value: '20-29', label: '20-29세' },
+    { value: '30-39', label: '30-39세' },
+    { value: '40-49', label: '40-49세' },
+    { value: '50+', label: '50세 이상' }
+  ];
+
+  const calculatePrice = () => {
+    const selectedStageData = stages.find(stage => stage.id === selectedStage);
+    let basePrice = selectedStageData ? selectedStageData.basePrice : 12500;
+    let totalPrice = basePrice * numberOfTesters;
+    
+    // 상세 타겟팅 추가 비용
+    if (detailedTarget.trim()) {
+      totalPrice *= 1.2; // 20% 추가
+    }
+    
+    // 로그인 기능 추가 비용
+    if (includeLogin) {
+      totalPrice *= 1.15; // 15% 추가
+    }
+    
+    return Math.round(totalPrice);
+  };
+
+  // 실시간 업데이트를 위한 useEffect
+  const [currentPrice, setCurrentPrice] = useState(calculatePrice());
+  
+  React.useEffect(() => {
+    setCurrentPrice(calculatePrice());
+  }, [selectedStage, numberOfTesters, detailedTarget, includeLogin]);
+
+    return (
+    <section className="pt-20 bg-black">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-3xl sm:text-3xl lg:text-4xl font-bold text-white mb-4 text-left fade-in">
+          당신의 시간을 성공에<br/>투자하는 가장 현명한 플랜
+        </h2>
+        <p className="text-lg text-white/70 text-left mb-8 fade-in">
+          프로젝트에 맞는 테스트 옵션을 선택하고 실시간으로 예상 비용을 확인하세요
+        </p>
+
+        {/* Plan Check Button */}
+        {!showPlanDetails && (
+          <div className="flex justify-start mb-16 fade-in">
+            <button
+              onClick={() => {
+                console.log('Button clicked, setting showPlanDetails to true');
+                setShowPlanDetails(true);
+              }}
+              className="px-8 py-3 border border-white text-white font-semibold rounded-lg hover:bg-white hover:text-black transition-all duration-300"
+            >
+              플랜 확인하기
+            </button>
+        </div>
+        )}
+
+        {/* Plan Details */}
+        {showPlanDetails && (
+          <div className="grid lg:grid-cols-2 gap-12 items-start">
+          {/* Left Side - Options */}
+          <div className="space-y-8">
+            {/* Test Stage Selection */}
+            <div>
+              <h3 className="text-xl font-semibold text-white mb-6">테스트 단계</h3>
+              <div className="grid gap-4">
+                {stages.map((stage) => (
+                  <label
+                    key={stage.id}
+                    className={`relative flex items-center p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 ${
+                      selectedStage === stage.id
+                        ? 'border-white bg-white/10'
+                        : 'border-white/30 hover:border-white/50'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="stage"
+                      value={stage.id}
+                      checked={selectedStage === stage.id}
+                      onChange={(e) => setSelectedStage(e.target.value)}
+                      className="sr-only"
+                    />
+                    <div className="flex-1">
+                      <div className="font-semibold text-white mb-1">[{stage.title}]</div>
+                      <div className="text-white/70 text-sm">{stage.description}</div>
+                  </div>
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                      selectedStage === stage.id ? 'border-white bg-white' : 'border-white/50'
+                    }`}>
+                      {selectedStage === stage.id && (
+                        <div className="w-2 h-2 rounded-full bg-black"></div>
+                      )}
+                </div>
+                  </label>
+                ))}
+                    </div>
+                  </div>
+
+            {/* Number of Testers */}
+            <div>
+              <h3 className="text-xl font-semibold text-white mb-6">테스트 인원</h3>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between text-white">
+                  <span>1명</span>
+                  <span className="font-semibold">{numberOfTesters}명</span>
+                  <span>100명</span>
+                </div>
+                <input
+                  type="range"
+                  min="1"
+                  max="100"
+                  value={numberOfTesters}
+                  onChange={(e) => setNumberOfTesters(parseInt(e.target.value))}
+                  className="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer slider focus:outline-none"
+                />
+              </div>
+            </div>
+
+            {/* Target Conditions */}
+            <div>
+              <h3 className="text-xl font-semibold text-white mb-6">테스터 조건</h3>
+              <div className="space-y-4">
+                {/* Age Dropdown */}
+                <div>
+                  <label className="block text-white/80 mb-2">나이</label>
+                  <select
+                    value={targetAge}
+                    onChange={(e) => setTargetAge(e.target.value)}
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:border-white/60 transition-colors duration-200"
+                  >
+                    {ageOptions.map((option) => (
+                      <option key={option.value} value={option.value} className="bg-black text-white">
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                    </div>
+
+                {/* Gender Selection */}
+                <div>
+                  <label className="block text-white/80 mb-2">성별</label>
+                  <div className="flex gap-3">
+                    {[
+                      { value: '', label: '선택안함' },
+                      { value: 'male', label: '남성' },
+                      { value: 'female', label: '여성' }
+                    ].map((option) => (
+                      <button
+                        key={option.value}
+                        onClick={() => setTargetGender(option.value)}
+                        className={`flex-1 py-3 px-4 rounded-lg border-2 transition-all duration-300 focus:outline-none ${
+                          targetGender === option.value
+                            ? 'border-white bg-white/10 text-white'
+                            : 'border-white/30 text-white/70 hover:border-white/50 hover:text-white'
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                      ))}
+                    </div>
+                </div>
+
+                {/* Detailed Target */}
+                <div>
+                  <label className="block text-white/80 mb-2">상세타겟</label>
+                  <textarea
+                    value={detailedTarget}
+                    onChange={(e) => setDetailedTarget(e.target.value)}
+                    placeholder="예: 의료 업계 종사자, OTT 구독 경험 1년 이상"
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-white/60 min-h-[80px] transition-colors duration-200"
+                  />
+              </div>
+              </div>
+            </div>
+
+            {/* Login Feature Toggle */}
+            <div>
+              <h3 className="text-xl font-semibold text-white mb-6">로그인 기능</h3>
+              <div className="flex items-center justify-between">
+                <span className="text-white/80">로그인/회원가입 과정이 필요한가요?</span>
+                <button
+                  onClick={() => setIncludeLogin(!includeLogin)}
+                  className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors duration-300 focus:outline-none min-h-0 ${
+                    includeLogin ? 'bg-white' : 'bg-white/30'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-6 w-6 transform rounded-full bg-black transition-transform duration-300 ${
+                      includeLogin ? 'translate-x-9' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Side - Summary & Price */}
+          <div className="lg:sticky lg:top-8">
+            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
+              {/* Estimated Price */}
+              <div className="text-center mb-8">
+                <h3 className="text-lg text-white/80 mb-2">예상 비용</h3>
+                <div className="text-4xl lg:text-5xl font-bold text-white mb-2 transition-all duration-500">
+                  ₩ {currentPrice.toLocaleString()}
+                </div>
+                <p className="text-white/60 text-sm">VAT 별도</p>
+              </div>
+
+              {/* Summary */}
+              <div className="space-y-3 mb-8">
+                <h4 className="text-lg font-semibold text-white mb-4">선택 항목 요약</h4>
+                <div className="space-y-2 text-white/80">
+                  <div className="flex justify-between">
+                    <span>테스트 단계:</span>
+                    <span>{stages.find(s => s.id === selectedStage)?.title}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>테스터:</span>
+                    <span>{numberOfTesters}명</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>나이 조건:</span>
+                    <span>{targetAge || '제한 없음'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>성별 조건:</span>
+                    <span>{targetGender === 'male' ? '남성' : targetGender === 'female' ? '여성' : '선택안함'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>상세 타겟:</span>
+                    <span className="text-right max-w-[150px] truncate">
+                      {detailedTarget.trim() || '없음'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>로그인 테스트:</span>
+                    <span>{includeLogin ? '포함' : '미포함'}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* CTA Button */}
+              <button
+                onClick={onOpenModal}
+                className="w-full py-4 px-6 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-black transition-all duration-300"
+              >
+                이 조건으로 테스트 시작하기
+              </button>
+            </div>
+          </div>
+        </div>
+        )}
+
+      </div>
+
+      {/* Bottom Images - Full width, no padding */}
+      <div className="mt-16">
+        {/* Mobile Image */}
+        <div className="block lg:hidden">
+          <img 
+            src="/images/rideshare_feature-mobile.jpg" 
+            alt="Rideshare Feature Mobile" 
+            className="w-full h-auto"
+          />
+        </div>
+        
+        {/* Desktop Image */}
+        <div className="hidden lg:block">
+          <img 
+            src="/images/rideshare_feature.jpg" 
+            alt="Rideshare Feature" 
+            className="w-full h-auto"
+          />
         </div>
       </div>
     </section>
@@ -914,9 +1240,9 @@ const SolutionSection = ({ onOpenModal }) => {
           <p className="text-lg sm:text-xl text-white/70 max-w-2xl fade-in">
             3단계 프로토콜로 확실한 인사이트를 얻으세요
           </p>
-        </div>
-        
-        <div className="relative fade-in">
+          </div>
+          
+          <div className="relative fade-in">
           {/* Carousel Container */}
           {/* Mobile View */}
           <div 
@@ -952,8 +1278,8 @@ const SolutionSection = ({ onOpenModal }) => {
                       } ${index === 2 ? 'object-center' : 'object-top'}`}
                     />
                     <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]"></div>
-                  </div>
-
+              </div>
+              
                   {/* Content - Bottom aligned */}
                   <div className="absolute inset-0 flex flex-col justify-end p-6 pb-8 pointer-events-none">
                     <h3 
@@ -972,10 +1298,10 @@ const SolutionSection = ({ onOpenModal }) => {
                     >
                       {index === currentSlide ? step.description : ''}
                     </p>
-                  </div>
-                    </div>
+            </div>
+          </div>
                       ))}
-                    </div>
+        </div>
                 </div>
 
           {/* Desktop View */}
@@ -1383,6 +1709,7 @@ const App = () => {
       {/* <GlobeSection /> */}
       <SolutionSection onOpenModal={() => setIsModalOpen(true)} />
       <StageSection />
+      <PricingSection onOpenModal={() => setIsModalOpen(true)} />
       <DifferenceSection />
       <TargetSection />
       <SocialProofSection />
