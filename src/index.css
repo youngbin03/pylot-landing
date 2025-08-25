@@ -203,16 +203,16 @@ textarea:focus {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #1a1a1a;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #4A69FF;
+  background: #404040;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3A59EF;
+  background: #606060;
 }
 
 /* Mobile-first optimizations */

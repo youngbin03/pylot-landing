@@ -635,13 +635,94 @@ const StageSection = () => {
   ];
 
   return (
-    <section className="py-20 bg-black">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 bg-black relative">
+      {/* Desktop Image - Absolute positioned */}
+      <div className="hidden lg:block absolute left-0 bottom-0 w-2/5 z-0">
+        <img 
+          src="/images/StageSection.jpg" 
+          alt="Stage Illustration" 
+          className="w-full h-auto"
+        />
+      </div>
+      
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-12 fade-in">
           당신의 아이디어는<br/>어느 단계에 있나요?
-          </h2>
-        
-                  {/* Stage Navigation */}
+        </h2>
+
+        {/* Desktop Layout */}
+        <div className="hidden lg:flex justify-end mb-12">
+          {/* Right Content */}
+          <div className="w-1/2">
+            {/* Stage Navigation */}
+            <div className="flex space-x-4 mb-12">
+              {stages.map((stage) => (
+                <button
+                  key={stage.id}
+                  onClick={() => setCurrentStage(stage.id)}
+                  className={`text-base font-medium transition-all duration-300 pb-2 focus:outline-none focus-visible:outline-none ${
+                  currentStage === stage.id
+                    ? 'text-white border-b-2 border-white'
+                    : 'text-white/50 hover:text-white/70'
+                }`}
+                >
+                  {stage.title}
+                </button>
+              ))}
+            </div>
+            
+            {/* Stage Content */}
+            <div className="space-y-4 max-w-4xl">
+              {stages.find(stage => stage.id === currentStage)?.items.map((item, index) => (
+                <div key={index}>
+                  {index > 0 && <div className="h-px bg-white/40 my-4" />}
+                  <div 
+                    className="flex items-center justify-between gap-4 cursor-pointer group"
+                    onClick={() => setSelectedItem(currentStage + '-' + index)}
+                  >
+                      <div className="flex-1">
+                        <h3 className="text-white text-lg font-medium mb-3">{item.title}</h3>
+                        <div className="flex gap-3">
+                          {item.tags.map((tag, tagIndex) => (
+                            <span
+                              key={tagIndex}
+                              className="text-white/70 text-sm"
+                            >
+                              #{tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="relative w-5 h-5 flex-shrink-0 min-h-0">
+                        <div className={`absolute inset-0 rounded-full border-2 transition-all duration-200 ${
+                          selectedItem === currentStage + '-' + index
+                            ? 'bg-white border-white scale-100'
+                            : 'border-white/40 group-hover:border-white/80 scale-95 group-hover:scale-100'
+                        }`} />
+                        {selectedItem === currentStage + '-' + index && (
+                          <svg
+                            className="absolute inset-0 w-full h-full text-black p-[3px] transform scale-90"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="3"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        )}
+                      </div>
+                    </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Layout */}
+        <div className="lg:hidden">
+          {/* Stage Navigation */}
           <div className="flex space-x-4 mb-12">
             {stages.map((stage) => (
               <button
@@ -652,14 +733,14 @@ const StageSection = () => {
                   ? 'text-white border-b-2 border-white'
                   : 'text-white/50 hover:text-white/70'
               }`}
-            >
-              {stage.title}
-            </button>
-          ))}
-        </div>
-        
-        {/* Stage Content */}
-                <div className="space-y-4 max-w-4xl mx-auto">
+              >
+                {stage.title}
+              </button>
+            ))}
+          </div>
+          
+          {/* Stage Content */}
+          <div className="space-y-4 max-w-4xl">
           {stages.find(stage => stage.id === currentStage)?.items.map((item, index) => (
             <div key={index}>
               {index > 0 && <div className="h-px bg-white/40 my-4" />}
@@ -716,6 +797,7 @@ const StageSection = () => {
           >
             테스트 시나리오 보기
           </button>
+        </div>
         </div>
       </div>
     </section>
@@ -865,9 +947,9 @@ const SolutionSection = ({ onOpenModal }) => {
                     <img
                       src={step.image}
                       alt={step.title}
-                      className={`w-full h-full object-cover object-top transition-all duration-400 ${
-                        index === currentSlide ? 'animate-image-highlight brightness-155' : 'brightness-90'
-                      }`}
+                      className={`w-full h-full object-cover transition-transform duration-400 ${
+                        index === currentSlide ? 'animate-image-highlight' : ''
+                      } ${index === 2 ? 'object-center' : 'object-top'}`}
                     />
                     <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]"></div>
                   </div>
@@ -919,9 +1001,9 @@ const SolutionSection = ({ onOpenModal }) => {
                     <img
                       src={step.image}
                       alt={step.title}
-                      className={`w-full h-full object-cover transition-all duration-300 ${
-                        index === currentSlide ? 'animate-image-highlight brightness-185' : 'brightness-100'
-                      }`}
+                      className={`w-full h-full object-cover transition-transform duration-300 ${
+                        index === currentSlide ? 'animate-image-highlight' : ''
+                      } ${index === 2 ? 'object-center' : 'object-top'}`}
                     />
                     <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]"></div>
           </div>
