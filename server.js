@@ -10,8 +10,8 @@ const PORT = process.env.PORT || 3001;
 // Middleware
 app.use(cors());
 app.use(express.json());
-// 프론트엔드는 Vercel에서 별도 배포됨 - 정적 파일 서빙 불필요
-// app.use(express.static('dist'));
+// Railway 풀스택: 프론트엔드와 백엔드를 함께 서빙
+app.use(express.static('dist')); // Vite build output
 
 // 이메일 transporter 초기화
 let transporter = null;
@@ -638,12 +638,9 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
-// API 서버 전용 - 프론트엔드는 Vercel에서 별도 배포됨
+// Railway 풀스택: 모든 라우트를 React SPA로 리다이렉트
 app.get('*', (req, res) => {
-  res.status(404).json({ 
-    error: 'API 엔드포인트를 찾을 수 없습니다',
-    message: '프론트엔드는 Vercel에서 별도 배포됩니다'
-  });
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 app.listen(PORT, async () => {
