@@ -184,6 +184,225 @@ const ApplicationModal = ({ isOpen, onClose }) => {
   );
 };
 
+// Pilot Registration Modal Component
+const PilotRegistrationModal = ({ isOpen, onClose }) => {
+  const [formData, setFormData] = useState({
+    email: '',
+    gender: '',
+    age: '',
+    occupation: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
+
+  const ageRanges = [
+    { value: '10-19', label: '10-19세' },
+    { value: '20-29', label: '20-29세' },
+    { value: '30-39', label: '30-39세' },
+    { value: '40-49', label: '40-49세' },
+    { value: '50-59', label: '50-59세' },
+    { value: '60+', label: '60세 이상' }
+  ];
+
+  const occupations = [
+    { value: 'student', label: '학생' },
+    { value: 'office_worker', label: '사무직' },
+    { value: 'service', label: '서비스업' },
+    { value: 'manufacturing', label: '제조업' },
+    { value: 'education', label: '교육' },
+    { value: 'healthcare', label: '의료/보건' },
+    { value: 'it', label: 'IT/기술' },
+    { value: 'finance', label: '금융' },
+    { value: 'marketing', label: '마케팅/광고' },
+    { value: 'freelancer', label: '프리랜서' },
+    { value: 'housewife', label: '주부' },
+    { value: 'other', label: '기타' }
+  ];
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    try {
+      const response = await fetch('/api/pilot-registration', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        // 자동 닫기 제거 - 사용자가 직접 닫도록 함
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-black border border-white/20 rounded-2xl p-6 sm:p-8 w-full max-w-md relative">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-2 text-white/60 hover:text-white focus:outline-none"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        
+        {submitStatus !== 'success' && (
+          <>
+            <h2 className="text-2xl font-bold text-white mb-2 text-center">파일럿 등록하기</h2>
+            <p className="text-white/70 text-sm text-center mb-6">
+              테스트 참여로 한 번에 3,900원~15,000원을 받아보세요
+            </p>
+          </>
+        )}
+        
+        {submitStatus === 'success' && (
+          <div className="mb-6 mt-10">
+            <h3 className="text-xl font-bold text-white mb-2 text-left">파일럿으로 합류하신걸 환영합니다!</h3>
+            <p className="text-white/70 text-sm leading-relaxed text-left">
+              환영 이메일을 발송했습니다.<br/>
+              곧 새로운 테스트 기회를 알려드릴게요.
+            </p>
+            
+            {/* Banner 이미지 추가 */}
+            <div className="mt-6">
+              <img 
+                src="/icons/baner.webp" 
+                alt="Pylot Banner" 
+                className="w-full h-auto rounded-lg opacity-80"
+              />
+            </div>
+          </div>
+        )}
+        
+        {submitStatus === 'error' && (
+          <div className="mb-4 p-3 bg-red-500/20 border border-red-500/30 rounded-lg text-red-400 text-sm text-center">
+            등록 중 오류가 발생했습니다. 다시 시도해주세요.
+          </div>
+        )}
+        
+        {submitStatus !== 'success' && (
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-white/80 text-sm font-medium mb-2">
+              이메일 주소
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-white/60 transition-colors"
+              placeholder="이메일을 입력하세요"
+              required
+            />
+          </div>
+          
+          <div>
+            <label className="block text-white/80 text-sm font-medium mb-2">
+              성별
+            </label>
+            <div className="flex gap-3">
+                                    <button
+                        type="button"
+                        onClick={() => setFormData({...formData, gender: 'male'})}
+                        className={`flex-1 py-3 px-4 rounded-lg border transition-all duration-300 focus:outline-none ${
+                          formData.gender === 'male'
+                            ? 'border-white bg-white text-black font-semibold'
+                            : 'border-white/30 text-white/70 hover:border-white/50 hover:text-white'
+                        }`}
+                      >
+                        남성
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFormData({...formData, gender: 'female'})}
+                        className={`flex-1 py-3 px-4 rounded-lg border transition-all duration-300 focus:outline-none ${
+                          formData.gender === 'female'
+                            ? 'border-white bg-white text-black font-semibold'
+                            : 'border-white/30 text-white/70 hover:border-white/50 hover:text-white'
+                        }`}
+                      >
+                        여성
+                      </button>
+            </div>
+          </div>
+          
+          <div>
+            <label className="block text-white/80 text-sm font-medium mb-2">
+              나이
+            </label>
+            <select
+              name="age"
+              value={formData.age}
+              onChange={handleChange}
+              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:border-white/60 transition-colors"
+              required
+            >
+              <option value="" className="bg-black text-white">나이대를 선택하세요</option>
+              {ageRanges.map((range) => (
+                <option key={range.value} value={range.value} className="bg-black text-white">
+                  {range.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-white/80 text-sm font-medium mb-2">
+              직업군
+            </label>
+            <select
+              name="occupation"
+              value={formData.occupation}
+              onChange={handleChange}
+              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:border-white/60 transition-colors"
+              required
+            >
+              <option value="" className="bg-black text-white">직업을 선택하세요</option>
+              {occupations.map((job) => (
+                <option key={job.value} value={job.value} className="bg-black text-white">
+                  {job.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full py-3 px-6 bg-white text-black font-medium rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none"
+          >
+            {isSubmitting ? '등록 중...' : '파일럿 등록하기'}
+          </button>
+        </form>
+        )}
+      </div>
+    </div>
+  );
+};
+
 // Header Component
 const Header = ({ onOpenModal }) => {
     const [scrollOpacity, setScrollOpacity] = useState(0);
@@ -1425,7 +1644,7 @@ const SolutionSection = ({ onOpenModal }) => {
 
 
 // Tester Recruitment Section Component
-const TesterRecruitmentSection = () => {
+const TesterRecruitmentSection = ({ onOpenPilotModal }) => {
   return (
     <section className="bg-black">
       {/* Hero Section with Background Image */}
@@ -1460,7 +1679,7 @@ const TesterRecruitmentSection = () => {
           <div className="max-w-4xl mx-auto">
             <div className="space-y-6 text-left">
               <p className="text-base sm:text-lg text-white/90 leading-relaxed fade-in mt-6">
-                출퇴근길 단 15분, 당신의 솔직한 경험이 새로운 서비스를 만드는 최고의 피드백이 됩니다. 30초면 끝나는 간단한 가입 후, 테스트 매칭을 위한 당신의 관심사와 프로필을 알려주세요. 내게 꼭 맞는 새로운 테스트가 등록되면 채널톡 알림을 보내드려요. 안내에 따라 편안하게 테스트를 진행해주세요.
+                출퇴근길 단 15분, 당신의 솔직한 경험이 새로운 서비스를 만드는 최고의 피드백이 됩니다. 테스트 매칭을 위한 당신의 관심사와 프로필을 알려주세요. 내게 꼭 맞는 새로운 테스트가 등록되면 채널톡 알림을 보내드려요. 안내에 따라 편안하게 테스트를 진행해주세요.
               </p>
               
               <p className="text-base sm:text-lg text-white/90 leading-relaxed fade-in">
@@ -1535,7 +1754,10 @@ const TesterRecruitmentSection = () => {
             
             {/* Button at the bottom */}
             <div className="flex justify-left mt-12 fade-in">
-              <button className="w-full sm:w-auto px-8 py-4 border border-white text-white font-semibold text-lg rounded-lg hover:bg-white hover:text-black transition-all duration-300">
+              <button 
+                onClick={onOpenPilotModal}
+                className="w-full sm:w-auto px-8 py-4 border border-white text-white font-semibold text-lg rounded-lg hover:bg-white hover:text-black transition-all duration-300 focus:outline-none"
+              >
                 지금 파일럿 되기
               </button>
             </div>
@@ -1585,6 +1807,7 @@ const Footer = () => {
 // Main App Component
 const App = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPilotModalOpen, setIsPilotModalOpen] = useState(false);
   
   useScrollAnimation();
 
@@ -1600,12 +1823,17 @@ const App = () => {
       <SolutionSection onOpenModal={() => setIsModalOpen(true)} />
       <StageSection />
       <PricingSection onOpenModal={() => setIsModalOpen(true)} />
-      <TesterRecruitmentSection />
+      <TesterRecruitmentSection onOpenPilotModal={() => setIsPilotModalOpen(true)} />
       <Footer />
       
       <ApplicationModal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
+      />
+      
+      <PilotRegistrationModal 
+        isOpen={isPilotModalOpen} 
+        onClose={() => setIsPilotModalOpen(false)} 
       />
     </div>
   );

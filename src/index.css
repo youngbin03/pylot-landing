@@ -124,7 +124,6 @@ img[src=""] {
 }
 
 /* Enhanced focus states for accessibility */
-button:focus,
 input:focus,
 textarea:focus {
   outline: 2px solid #4A69FF;
