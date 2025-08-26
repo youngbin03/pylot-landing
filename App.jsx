@@ -277,7 +277,7 @@ const PilotRegistrationModal = ({ isOpen, onClose }) => {
           <>
             <h2 className="text-2xl font-bold text-white mb-2 text-center">파일럿 등록하기</h2>
             <p className="text-white/70 text-sm text-center mb-6">
-              테스트 참여로 한 번에 3,900원~15,000원을 받아보세요
+              테스트 참여로 평균 4,900원을 받고 있어요!
             </p>
           </>
         )}

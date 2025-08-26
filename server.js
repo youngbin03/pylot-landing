@@ -638,9 +638,12 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
-// Railway 풀스택: 모든 라우트를 React SPA로 리다이렉트
+// API 서버 전용 - 프론트엔드는 Vercel에서 별도 배포됨
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  res.status(404).json({ 
+    error: 'API 엔드포인트를 찾을 수 없습니다',
+    message: '프론트엔드는 Vercel에서 별도 배포됩니다'
+  });
 });
 
 app.listen(PORT, async () => {
