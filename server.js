@@ -22,16 +22,21 @@ const initializeTransporter = async () => {
     console.log('🔐 Gmail 계정으로 이메일 서비스 초기화');
     try {
       const transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false, // true for 465, false for other ports
+        service: 'gmail', // Gmail 서비스 직접 사용
         auth: {
           user: process.env.GMAIL_USER || 'teampylot@gmail.com',
-          pass: process.env.GMAIL_APP_PASSWORD
+          pass: process.env.GMAIL_APP_PASSWORD?.replace(/\s/g, '') // 공백 제거
         },
+        pool: true, // 연결 풀 사용
+        maxConnections: 1,
+        rateDelta: 20000, // 20초 간격
+        rateLimit: 5, // 20초당 5개 이메일
         tls: {
           rejectUnauthorized: false
-        }
+        },
+        connectionTimeout: 60000, // 60초 타임아웃
+        greetingTimeout: 30000, // 30초 그리팅 타임아웃
+        socketTimeout: 60000 // 60초 소켓 타임아웃
       });
       
       // 연결 테스트
@@ -40,43 +45,16 @@ const initializeTransporter = async () => {
       return transporter;
     } catch (error) {
       console.error('❌ Gmail 인증 실패:', error.message);
-      console.log('🔄 테스트 계정으로 전환합니다...');
-      // Gmail 실패 시 테스트 계정으로 fallback
+      console.error('📧 Gmail 설정을 확인해주세요:');
+      console.error('   - GMAIL_USER:', process.env.GMAIL_USER);
+      console.error('   - GMAIL_APP_PASSWORD 길이:', process.env.GMAIL_APP_PASSWORD?.length);
+      throw new Error('Gmail 인증에 실패했습니다. 앱 비밀번호를 확인해주세요.');
     }
   }
   
-  // Gmail 설정이 없거나 실패한 경우 테스트 계정 사용
-    try {
-      const testAccount = await nodemailer.createTestAccount();
-      console.log('🧪 테스트 이메일 계정 생성:', testAccount.user);
-      console.log('🔗 테스트 이메일 확인: https://ethereal.email/login');
-      console.log('   - 사용자명:', testAccount.user);
-      console.log('   - 비밀번호:', testAccount.pass);
-      
-      return nodemailer.createTransport({
-        host: 'smtp.ethereal.email',
-        port: 587,
-        secure: false,
-        auth: {
-          user: testAccount.user,
-          pass: testAccount.pass
-        }
-      });
-    } catch (error) {
-      console.error('❌ 테스트 계정 생성 실패:', error);
-      // 테스트 계정 생성 실패시 더미 transporter 사용
-      console.log('⚠️  더미 모드로 전환합니다.');
-      return {
-        sendMail: async (options) => {
-          console.log('📧 더미 이메일 발송:', {
-            to: options.to,
-            subject: options.subject,
-            preview: options.html.substring(0, 100) + '...'
-          });
-          return { messageId: 'dummy-' + Date.now() };
-        }
-      };
-    }
+  // Gmail 환경변수가 없는 경우
+  console.error('❌ Gmail 환경변수가 설정되지 않았습니다');
+  throw new Error('GMAIL_APP_PASSWORD 환경변수가 필요합니다');
 };
 
 // 이메일 템플릿 함수
