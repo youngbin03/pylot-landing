@@ -1,8 +1,18 @@
 {
-  "rewrites": [
+  "version": 2,
+  "functions": {
+    "api/pilot-registration.js": {
+      "maxDuration": 30
+    }
+  },
+  "routes": [
     {
-      "source": "/api/(.*)",
-      "destination": "https://pylot-email-server-production.up.railway.app/api/$1"
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/dist/$1"
     }
   ]
 }

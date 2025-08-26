@@ -225,12 +225,7 @@ const PilotRegistrationModal = ({ isOpen, onClose }) => {
     setSubmitStatus(null);
 
     try {
-      // API URL 설정 (개발/프로덕션 환경 구분)
-      const apiUrl = import.meta.env.PROD 
-        ? 'https://pylot-email-server-production.up.railway.app/api/pilot-registration'
-        : '/api/pilot-registration';
-      
-      const response = await fetch(apiUrl, {
+             const response = await fetch('/api/pilot-registration', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

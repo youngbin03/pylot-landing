@@ -289,10 +289,11 @@ const createWelcomeEmail = (userData) => {
                   }
             .cta-text {
               font-size: 16px;
-              color: rgba(255, 255, 255, 0.7);
+              color: rgba(255, 255, 255, 0.7) !important;
               margin-bottom: 24px;
               line-height: 1.6;
               text-align: left;
+              padding-bottom: 8px;
             }
             .cta-button {
               display: inline-block;
@@ -507,7 +508,7 @@ const createWelcomeEmail = (userData) => {
               
               <div class="cta-section">
                 <p class="cta-text">
-                  궁금한 점이 있으시거나 도움이 필요하시면 언제든 문의해주세요.<br>
+                  궁금한 점이 있으시거나 도움이 필요하시면 언제든 문의해주세요.
                   Pylot과 함께 혁신의 최전선에서 활동해주셔서 감사합니다.
                 </p>
                 <a href="https://www.testpylot.com" class="cta-button">Pylot 홈페이지 방문하기</a>
