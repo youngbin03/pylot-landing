@@ -538,30 +538,61 @@ const Header = ({ onOpenModal }) => {
 
 // Hero Section Component
 const HeroSection = ({ onOpenModal }) => {
+  const videoRef = React.useRef(null);
+  const mobileVideoRef = React.useRef(null);
+  
+  React.useEffect(() => {
+    // 비디오 자동재생 강제 시도
+    const playVideo = async (videoElement) => {
+      if (videoElement) {
+        try {
+          await videoElement.play();
+        } catch (error) {
+          console.log('비디오 자동재생 실패:', error);
+          // 사용자 상호작용 후 재생하도록 이벤트 리스너 추가
+          const playOnInteraction = () => {
+            videoElement.play();
+            document.removeEventListener('click', playOnInteraction);
+            document.removeEventListener('touchstart', playOnInteraction);
+          };
+          document.addEventListener('click', playOnInteraction);
+          document.addEventListener('touchstart', playOnInteraction);
+        }
+      }
+    };
+    
+    playVideo(videoRef.current);
+    playVideo(mobileVideoRef.current);
+  }, []);
+  
   return (
     <section className="min-h-screen bg-black flex items-center relative overflow-hidden">
       {/* Background Video */}
       <div className="absolute inset-0 w-full h-full">
         {/* Desktop Video */}
         <video
+          ref={videoRef}
           className="hidden md:block w-full h-full object-cover"
           autoPlay
           muted
           loop
           playsInline
           preload="metadata"
+          poster="/images/stagesection_background.jpg"
         >
           <source src="/video/desktop_background_video.mp4" type="video/mp4" />
         </video>
         
         {/* Mobile Video */}
         <video
+          ref={mobileVideoRef}
           className="block md:hidden w-full h-full object-cover"
           autoPlay
           muted
           loop
           playsInline
           preload="metadata"
+          poster="/images/stagesection_background.jpg"
         >
           <source src="/video/mobile_background_video.mp4" type="video/mp4" />
         </video>
