@@ -198,7 +198,7 @@ const createWelcomeEmail = (userData) => {
               border: 1px solid rgba(255, 255, 255, 0.1);
               border-radius: 16px;
               padding: 32px;
-              margin: 32px 0;
+              margin: 32px 0 16px 0;
               backdrop-filter: blur(10px);
             }
             .user-info-item {
@@ -283,8 +283,8 @@ const createWelcomeEmail = (userData) => {
             }
                               .cta-section {
                     text-align: center;
-                    margin: 50px 0 20px 0;
-                    padding: 40px 0 20px 0;
+                    margin: 50px 0 10px 0;
+                    padding: 40px 0 10px 0;
                     border-top: 1px solid rgba(255, 255, 255, 0.1);
                   }
             .cta-text {
@@ -292,6 +292,7 @@ const createWelcomeEmail = (userData) => {
               color: rgba(255, 255, 255, 0.7);
               margin-bottom: 24px;
               line-height: 1.6;
+              text-align: left;
             }
             .cta-button {
               display: inline-block;
@@ -408,8 +409,8 @@ const createWelcomeEmail = (userData) => {
                 font-size: 20px;
               }
               .cta-section {
-                padding: 32px 0;
-                margin: 40px 0;
+                padding: 32px 0 10px 0;
+                margin: 40px 0 10px 0;
               }
             }
           </style>
