@@ -1521,7 +1521,7 @@ const SolutionSection = ({ onOpenModal }) => {
             </div>
           ))}
         </div>
-        </div>
+      </div>
         
           {/* Desktop View */}
           <div 
@@ -1573,11 +1573,11 @@ const SolutionSection = ({ onOpenModal }) => {
                       {step.description}
                     </p>
             </div>
-          </div>
-              ))}
+            </div>
+          ))}
         </div>
-          </div>
-
+        </div>
+        
           {/* Navigation Row - Bottom */}
           <div className="absolute -bottom-8 left-0 right-0 flex items-center justify-between px-4">
             {/* Left Arrow */}
@@ -1610,7 +1610,7 @@ const SolutionSection = ({ onOpenModal }) => {
                   }`}
                 />
               ))}
-            </div>
+        </div>
 
             {/* Right Arrow */}
             <button
@@ -1662,14 +1662,14 @@ const TesterRecruitmentSection = ({ onOpenPilotModal }) => {
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white my-6 fade-in">
               스마트폰 15분, 새로운 수익
-          </h2>
-            
+        </h2>
+        
             <p className="text-lg sm:text-lg font-medium text-white mb-6 fade-in">
               당신의 경험을 가치로 만들어보세요
             </p>
             
 
-          </div>
+            </div>
           </div>
         </div>
         
@@ -1686,7 +1686,7 @@ const TesterRecruitmentSection = ({ onOpenPilotModal }) => {
                 당신의 소중한 시간에 대한 합리적인 보상, 테스트 완료 즉시 지급되는 리워드로 지금 바로 경험하세요.
               </p>
               
-            </div>
+        </div>
             
             {/* Process Steps Graph */}
             <div className="mt-12 mb-8 fade-in">
@@ -1698,7 +1698,7 @@ const TesterRecruitmentSection = ({ onOpenPilotModal }) => {
                   <span className="text-white text-xs sm:text-sm font-medium">수행</span>
                   <span className="text-white text-xs sm:text-sm font-medium">제출</span>
                   <span className="text-white text-xs sm:text-sm font-medium">리워드</span>
-                </div>
+      </div>
                 
                 {/* Dots and Lines */}
                 <div className="relative flex items-center justify-between px-1 pr-3">
@@ -1707,8 +1707,8 @@ const TesterRecruitmentSection = ({ onOpenPilotModal }) => {
                     <div className="w-3 h-3 bg-white rounded-full shadow-2xl"></div>
                     <div className="absolute inset-0 w-3 h-3 bg-white rounded-full blur-sm opacity-80"></div>
                     <div className="absolute inset-0 w-3 h-3 bg-white rounded-full blur-md opacity-40"></div>
-                  </div>
-                  
+      </div>
+      
                   {/* Line 1 */}
                   <div className="flex-1 h-px bg-gradient-to-r from-white/60 to-white/40"></div>
                   
@@ -1754,14 +1754,14 @@ const TesterRecruitmentSection = ({ onOpenPilotModal }) => {
             
             {/* Button at the bottom */}
             <div className="flex justify-left mt-12 fade-in">
-              <button 
+            <button
                 onClick={onOpenPilotModal}
                 className="w-full sm:w-auto px-8 py-4 border border-white text-white font-semibold text-lg rounded-lg hover:bg-white hover:text-black transition-all duration-300 focus:outline-none"
-              >
+            >
                 지금 파일럿 되기
-              </button>
-            </div>
+            </button>
           </div>
+        </div>
         </div>
       </div>
     </section>

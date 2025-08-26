@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: pylot-email-server
+    env: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: GMAIL_USER
+        value: teampylot@gmail.com
+      - key: GMAIL_APP_PASSWORD
+        value: eirnmvmcplybznxk
+    staticPublishPath: ./dist
