@@ -3,13 +3,13 @@ services:
     name: pylot-email-server
     env: node
     plan: free
-    buildCommand: npm ci && npm run build
+    buildCommand: npm ci
     startCommand: node server.js
     envVars:
       - key: NODE_ENV
         value: production
-      - key: GMAIL_USER
-        value: teampylot@gmail.com
-      - key: GMAIL_APP_PASSWORD
-        value: eirnmvmcplybznxk
-    staticPublishPath: ./dist
+      # 보안상 환경변수는 Render 대시보드에서 직접 설정하세요
+      # - key: GMAIL_USER
+      #   value: teampylot@gmail.com
+      # - key: GMAIL_APP_PASSWORD  
+      #   value: [Render 대시보드에서 설정]
