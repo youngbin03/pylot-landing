@@ -373,7 +373,7 @@ const createWelcomeEmail = (userData) => {
                 margin-bottom: 12px;
               }
               .subtitle { 
-                font-size: 16px; 
+                font-size: 14px; 
                 line-height: 1.5;
                 margin-bottom: 32px;
               }
@@ -394,11 +394,11 @@ const createWelcomeEmail = (userData) => {
                 margin-right: 12px;
               }
               .process-title {
-                font-size: 15px;
+                font-size: 14px;
                 margin-bottom: 4px;
               }
               .process-desc {
-                font-size: 13px;
+                font-size: 12px;
                 line-height: 1.5;
               }
               .reward-box {
@@ -406,11 +406,31 @@ const createWelcomeEmail = (userData) => {
                 margin: 20px 0;
               }
               .reward-amount {
-                font-size: 20px;
+                font-size: 18px;
               }
               .cta-section {
                 padding: 32px 0 10px 0;
                 margin: 40px 0 10px 0;
+              }
+              .section-content {
+                font-size: 14px;
+                line-height: 1.6;
+              }
+              .section-title {
+                font-size: 18px;
+                margin-bottom: 12px;
+              }
+              .cta-text {
+                font-size: 14px;
+                line-height: 1.6;
+              }
+              .user-info-simple {
+                font-size: 14px;
+                padding: 16px 20px;
+              }
+              .reward-desc {
+                font-size: 13px;
+                line-height: 1.5;
               }
             }
           </style>
