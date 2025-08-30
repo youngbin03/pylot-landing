@@ -1222,11 +1222,11 @@ const LeanCanvasResultModal = ({ isOpen, onClose, leanCanvas, isLoading, error, 
           <div className="mt-12 border-t border-white/10 pt-8">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center">
-                <h3 className="text-xl font-bold text-white">🚨 핵심 리스크 분석</h3>
+                <h3 className="text-xl font-bold text-white">핵심 리스크 분석</h3>
                 {riskAnalysis && !isRiskLoading && !riskError && (
               <button
                     onClick={() => downloadRiskAnalysisAsImage()}
-                    className="ml-4 text-white/70 hover:text-white transition-all duration-300"
+                    className="ml-2 text-white/70 hover:text-white transition-all duration-300"
                     title="이미지로 다운로드"
               >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1238,9 +1238,9 @@ const LeanCanvasResultModal = ({ isOpen, onClose, leanCanvas, isLoading, error, 
               <button
                 onClick={handleRiskAnalysis}
                 disabled={isRiskLoading}
-                className="px-6 py-2 bg-red-600/20 border border-red-400/30 text-red-300 rounded-lg hover:bg-red-600/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 md:px-6 bg-red-600/20 border border-red-400/30 text-red-300 rounded-lg hover:bg-red-600/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base"
               >
-                {isRiskLoading ? '분석 중...' : '리스크 분석하기'}
+                {isRiskLoading ? '분석 중...' : '분석하기'}
               </button>
           </div>
           
@@ -1264,9 +1264,10 @@ const LeanCanvasResultModal = ({ isOpen, onClose, leanCanvas, isLoading, error, 
                 )}
 
                 {riskAnalysis && !isRiskLoading && !riskError && (
-                  <div id="risk-analysis-content" className="grid gap-6 md:grid-cols-1 lg:grid-cols-3">
+                  <div className="overflow-x-auto">
+                    <div id="risk-analysis-content" className="flex gap-6 md:grid md:grid-cols-1 lg:grid-cols-3 min-w-[900px] md:min-w-0">
                     {/* Market Risk */}
-                    <div className="border border-red-400/30 rounded-lg p-6 bg-red-600/5">
+                    <div className="border border-red-400/30 rounded-lg p-6 bg-red-600/5 flex-shrink-0 w-80 md:w-auto">
                       <div className="flex items-center mb-4">
                         <div className={`w-3 h-3 rounded-full mr-3 ${
                           riskAnalysis.market_risk.risk_level === 'HIGH' ? 'bg-red-500' :
@@ -1283,10 +1284,10 @@ const LeanCanvasResultModal = ({ isOpen, onClose, leanCanvas, isLoading, error, 
                           <p className="text-white/80 mt-1">{riskAnalysis.market_risk.assumption}</p>
         </div>
                         
-                        <div>
-                          <span className="text-red-300">실제 불확실성:</span>
+                                                <div>
+                          <span className="text-orange-300">실제 불확실성:</span>
                           <p className="text-white/80 mt-1">{riskAnalysis.market_risk.uncertainty}</p>
-      </div>
+                        </div>
                         
                         <div>
                           <span className="text-white/60">잠재적 영향:</span>
@@ -1301,7 +1302,7 @@ const LeanCanvasResultModal = ({ isOpen, onClose, leanCanvas, isLoading, error, 
                     </div>
 
                     {/* Product Risk */}
-                    <div className="border border-red-400/30 rounded-lg p-6 bg-red-600/5">
+                    <div className="border border-red-400/30 rounded-lg p-6 bg-red-600/5 flex-shrink-0 w-80 md:w-auto">
                       <div className="flex items-center mb-4">
                         <div className={`w-3 h-3 rounded-full mr-3 ${
                           riskAnalysis.product_risk.risk_level === 'HIGH' ? 'bg-red-500' :
@@ -1336,7 +1337,7 @@ const LeanCanvasResultModal = ({ isOpen, onClose, leanCanvas, isLoading, error, 
                     </div>
 
                     {/* Competitive Risk */}
-                    <div className="border border-red-400/30 rounded-lg p-6 bg-red-600/5">
+                    <div className="border border-red-400/30 rounded-lg p-6 bg-red-600/5 flex-shrink-0 w-80 md:w-auto">
                       <div className="flex items-center mb-4">
                         <div className={`w-3 h-3 rounded-full mr-3 ${
                           riskAnalysis.competitive_risk.risk_level === 'HIGH' ? 'bg-red-500' :
@@ -1354,7 +1355,7 @@ const LeanCanvasResultModal = ({ isOpen, onClose, leanCanvas, isLoading, error, 
                         </div>
                         
                         <div>
-                          <span className="text-purple-300">실제 불확실성:</span>
+                          <span className="text-orange-300">실제 불확실성:</span>
                           <p className="text-white/80 mt-1">{riskAnalysis.competitive_risk.uncertainty}</p>
                         </div>
                         
@@ -1368,6 +1369,7 @@ const LeanCanvasResultModal = ({ isOpen, onClose, leanCanvas, isLoading, error, 
                           <p className="text-white/80 mt-1">{riskAnalysis.competitive_risk.validation_method}</p>
                         </div>
                       </div>
+                    </div>
                     </div>
                   </div>
                 )}

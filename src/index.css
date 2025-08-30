@@ -345,7 +345,7 @@ video {
   }
 }
 
-/* Lean Canvas 스크롤바 스타일 */
+/* Lean Canvas & Risk Analysis 스크롤바 스타일 */
 .overflow-x-auto::-webkit-scrollbar {
   height: 6px;
 }
