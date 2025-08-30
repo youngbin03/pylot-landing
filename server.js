@@ -1,8 +1,16 @@
-const express = require('express');
-const cors = require('cors');
-const nodemailer = require('nodemailer');
-const path = require('path');
-require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import nodemailer from 'nodemailer';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+import { GoogleGenAI, Type } from '@google/genai';
+
+// ES 모듈에서 __dirname 대체
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -15,6 +23,18 @@ app.use(express.static('dist')); // Vite build output
 
 // 이메일 transporter 초기화
 let transporter = null;
+
+// Gemini AI 클라이언트 초기화
+let ai = null;
+
+const initializeGemini = () => {
+  if (!ai && process.env.GEMINI_API_KEY) {
+    ai = new GoogleGenAI({
+      apiKey: process.env.GEMINI_API_KEY
+    });
+  }
+  return ai;
+};
 
 const initializeTransporter = async () => {
   if (process.env.GMAIL_APP_PASSWORD) {
@@ -535,6 +555,185 @@ const createWelcomeEmail = (userData) => {
     };
 };
 
+// Lean Canvas API 엔드포인트
+app.post('/api/lean-canvas', async (req, res) => {
+  try {
+    const { customer, problem, solution } = req.body;
+
+    // 입력값 검증
+    if (!customer || !problem || !solution) {
+      return res.status(400).json({
+        error: 'Missing required fields',
+        required: ['customer', 'problem', 'solution']
+      });
+    }
+
+    console.log('🎯 Lean Canvas 생성 요청:', { 
+      customer: customer.substring(0, 50) + '...',
+      problem: problem.substring(0, 50) + '...',
+      solution: solution.substring(0, 50) + '...'
+    });
+
+    // Gemini AI 초기화
+    const gemini = initializeGemini();
+    if (!gemini) {
+      return res.status(500).json({
+        error: 'Gemini API key not configured'
+      });
+    }
+
+    // Lean Canvas JSON 스키마 정의
+    const leanCanvasSchema = {
+      type: Type.OBJECT,
+      properties: {
+        problem: {
+          type: Type.ARRAY,
+          items: { type: Type.STRING },
+          description: "해결하려는 고객의 상위 1~3개 문제와 기존 대안의 한계"
+        },
+        customer_segments: {
+          type: Type.ARRAY,
+          items: { type: Type.STRING },
+          description: "핵심 타겟 고객과 그들의 인구통계학적/심리적 특징"
+        },
+        unique_value_proposition: {
+          type: Type.ARRAY,
+          items: { type: Type.STRING },
+          description: "고객이 우리 제품을 써야만 하는 명확하고 매력적인 메시지"
+        },
+        solution: {
+          type: Type.ARRAY,
+          items: { type: Type.STRING },
+          description: "각 문제를 해결할 핵심 기능 3가지"
+        },
+        channels: {
+          type: Type.ARRAY,
+          items: { type: Type.STRING },
+          description: "고객에게 도달할 방법들"
+        },
+        revenue_streams: {
+          type: Type.ARRAY,
+          items: { type: Type.STRING },
+          description: "수익을 창출하는 방법들"
+        },
+        cost_structure: {
+          type: Type.ARRAY,
+          items: { type: Type.STRING },
+          description: "서버비, 마케팅비, 인건비 등 고정/변동 비용"
+        },
+        key_metrics: {
+          type: Type.ARRAY,
+          items: { type: Type.STRING },
+          description: "비즈니스 성과를 판단할 핵심 지표들"
+        },
+        unfair_advantage: {
+          type: Type.ARRAY,
+          items: { type: Type.STRING },
+          description: "경쟁사가 쉽게 따라할 수 없는 우리만의 강점"
+        }
+      },
+      propertyOrdering: [
+        "problem", "customer_segments", "unique_value_proposition",
+        "solution", "channels", "revenue_streams", "cost_structure",
+        "key_metrics", "unfair_advantage"
+      ],
+      required: [
+        "problem", "customer_segments", "unique_value_proposition", 
+        "solution", "channels", "revenue_streams", "cost_structure",
+        "key_metrics", "unfair_advantage"
+      ]
+    };
+
+    // Lean Canvas 생성을 위한 프롬프트
+    const prompt = `You are an expert startup consultant and accelerator mentor, specializing in creating Lean Canvases from early-stage ideas. Your task is to take a user's initial idea and expand it into a full, detailed Lean Canvas.
+
+Here is the user's input:
+- Target Customer: "${customer}"
+- Customer's Problem: "${problem}"
+- Proposed Solution: "${solution}"
+
+Based ONLY on the information provided above and your general business knowledge, complete all 9 sections of the Lean Canvas.
+
+For the 'problem', 'customer_segments', and 'solution' sections, primarily use the user's input but refine it into 2-3 clear, professional bullet points.
+For all other sections, infer and generate logical and creative business hypotheses. Each section should contain 2-3 concise bullet points.
+
+Your output MUST BE a single, valid JSON object.
+Do not include any text, explanation, or markdown formatting before or after the JSON object.
+The JSON object must have exactly these 9 keys: "problem", "solution", "key_metrics", "customer_segments", "unfair_advantage", "channels", "unique_value_proposition", "cost_structure", "revenue_streams".
+The value for each key must be an array of strings.
+
+Make sure each bullet point is:
+- Specific and actionable
+- Written in Korean
+- Professional and business-focused
+- Realistic and achievable
+
+Focus on creating a coherent business model where all sections support each other logically.`;
+
+    // Gemini API 호출 (구조화된 JSON 출력)
+    const response = await gemini.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+      config: {
+        temperature: 0.7,
+        responseMimeType: "application/json",
+        responseSchema: leanCanvasSchema,
+        thinkingConfig: {
+          thinkingBudget: 0, // 속도 향상을 위해 thinking 비활성화
+        }
+      }
+    });
+
+    console.log('✅ Lean Canvas 생성 완료');
+
+    // JSON 파싱 및 검증
+    let leanCanvas;
+    try {
+      leanCanvas = JSON.parse(response.text);
+    } catch (parseError) {
+      console.error('❌ JSON 파싱 오류:', parseError);
+      return res.status(500).json({
+        error: 'Failed to parse Lean Canvas response',
+        message: 'Invalid JSON format from AI'
+      });
+    }
+
+    // 필수 키 검증
+    const requiredKeys = [
+      'problem', 'customer_segments', 'unique_value_proposition',
+      'solution', 'channels', 'revenue_streams', 'cost_structure',
+      'key_metrics', 'unfair_advantage'
+    ];
+
+    const missingKeys = requiredKeys.filter(key => !leanCanvas[key]);
+    if (missingKeys.length > 0) {
+      return res.status(500).json({
+        error: 'Incomplete Lean Canvas',
+        missingKeys
+      });
+    }
+
+    // 성공 응답
+    res.status(200).json({
+      success: true,
+      data: {
+        leanCanvas,
+        input: { customer, problem, solution },
+        timestamp: new Date().toISOString()
+      }
+    });
+
+  } catch (error) {
+    console.error('❌ Lean Canvas 생성 오류:', error);
+    
+    res.status(500).json({
+      error: 'Lean Canvas generation failed',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // 파일럿 등록 API 엔드포인트
 app.post('/api/pilot-registration', async (req, res) => {
   try {
@@ -645,6 +844,186 @@ app.get('*', (req, res) => {
     error: 'API 엔드포인트를 찾을 수 없습니다',
     message: '프론트엔드는 Vercel에서 별도 배포됩니다'
   });
+});
+
+// Risk Analysis API 엔드포인트
+app.post('/api/risk-analysis', async (req, res) => {
+  try {
+    const { customer, problem, solution } = req.body;
+
+    // 입력값 검증
+    if (!customer || !problem || !solution) {
+      return res.status(400).json({
+        error: 'Missing required fields',
+        required: ['customer', 'problem', 'solution']
+      });
+    }
+
+    console.log('🎯 리스크 분석 요청:', { 
+      customer: customer.substring(0, 50) + '...',
+      problem: problem.substring(0, 50) + '...',
+      solution: solution.substring(0, 50) + '...'
+    });
+
+    // Gemini AI 초기화
+    const gemini = initializeGemini();
+    if (!gemini) {
+      return res.status(500).json({
+        error: 'Gemini API key not configured'
+      });
+    }
+
+    // 리스크 분석 JSON 스키마 정의
+    const riskAnalysisSchema = {
+      type: Type.OBJECT,
+      properties: {
+        market_risk: {
+          type: Type.OBJECT,
+          properties: {
+            title: { type: Type.STRING, description: "시장 리스크 제목" },
+            assumption: { type: Type.STRING, description: "사용자가 가정하고 있는 내용" },
+            uncertainty: { type: Type.STRING, description: "실제 불확실한 부분" },
+            impact: { type: Type.STRING, description: "비즈니스에 미칠 영향" },
+            validation_method: { type: Type.STRING, description: "검증 방법 제안" },
+            risk_level: { type: Type.STRING, enum: ["HIGH", "MEDIUM", "LOW"], description: "리스크 수준" }
+          },
+          required: ["title", "assumption", "uncertainty", "impact", "validation_method", "risk_level"]
+        },
+        product_risk: {
+          type: Type.OBJECT,
+          properties: {
+            title: { type: Type.STRING, description: "제품 리스크 제목" },
+            assumption: { type: Type.STRING, description: "사용자가 가정하고 있는 내용" },
+            uncertainty: { type: Type.STRING, description: "실제 불확실한 부분" },
+            impact: { type: Type.STRING, description: "비즈니스에 미칠 영향" },
+            validation_method: { type: Type.STRING, description: "검증 방법 제안" },
+            risk_level: { type: Type.STRING, enum: ["HIGH", "MEDIUM", "LOW"], description: "리스크 수준" }
+          },
+          required: ["title", "assumption", "uncertainty", "impact", "validation_method", "risk_level"]
+        },
+        competitive_risk: {
+          type: Type.OBJECT,
+          properties: {
+            title: { type: Type.STRING, description: "경쟁 리스크 제목" },
+            assumption: { type: Type.STRING, description: "사용자가 가정하고 있는 내용" },
+            uncertainty: { type: Type.STRING, description: "실제 불확실한 부분" },
+            impact: { type: Type.STRING, description: "비즈니스에 미칠 영향" },
+            validation_method: { type: Type.STRING, description: "검증 방법 제안" },
+            risk_level: { type: Type.STRING, enum: ["HIGH", "MEDIUM", "LOW"], description: "리스크 수준" }
+          },
+          required: ["title", "assumption", "uncertainty", "impact", "validation_method", "risk_level"]
+        }
+      },
+      propertyOrdering: ["market_risk", "product_risk", "competitive_risk"],
+      required: ["market_risk", "product_risk", "competitive_risk"]
+    };
+
+    // Assumption Mapping 기반 리스크 분석 프롬프트
+    const prompt = `You are a senior startup advisor and risk analyst specializing in Assumption Mapping methodology. Your task is to identify the 3 most critical risks that could make this business idea fail, focusing on assumptions the entrepreneur might not have questioned.
+
+Business Idea Analysis:
+- Target Customer: "${customer}"
+- Problem: "${problem}"  
+- Solution: "${solution}"
+
+Using Assumption Mapping principles, identify assumptions across these dimensions:
+1. DESIRABILITY: Do customers actually want this?
+2. FEASIBILITY: Can we build and deliver this?
+3. VIABILITY: Can this be a sustainable business?
+
+For each of the 3 risk categories below, identify the MOST CRITICAL assumption that is:
+- HIGH IMPORTANCE: Critical to business success
+- HIGH UNCERTAINTY: Not yet validated or proven
+- OFTEN OVERLOOKED: Something entrepreneurs commonly miss
+
+Provide exactly 3 risks in this order:
+
+1. MARKET RISK (Desirability Focus)
+- Focus on customer demand, market size, willingness to pay, behavioral assumptions
+- What if customers don't actually want this solution?
+- What if the market is smaller than assumed?
+
+2. PRODUCT RISK (Feasibility Focus)  
+- Focus on technical execution, user experience, operational challenges
+- What if we can't build what customers need?
+- What if the solution doesn't actually solve the problem?
+
+3. COMPETITIVE RISK (Viability Focus)
+- Focus on competitive landscape, differentiation, market positioning
+- What if competitors respond faster than expected?
+- What if our competitive advantage isn't sustainable?
+
+For each risk, provide:
+- title: Concise risk name (Korean)
+- assumption: What the entrepreneur is assuming (Korean)
+- uncertainty: What's actually uncertain/unproven (Korean)
+- impact: Potential business impact if assumption is wrong (Korean)
+- validation_method: Specific way to test this assumption (Korean)
+- risk_level: HIGH, MEDIUM, or LOW
+
+Focus on assumptions that are:
+✅ Critical to success but unvalidated
+✅ Commonly overlooked by entrepreneurs  
+✅ Testable through specific methods
+✅ Based on the specific business context provided
+
+Make insights sharp, actionable, and eye-opening. Challenge assumptions the entrepreneur likely hasn't questioned yet.`;
+
+    // Gemini API 호출 (구조화된 JSON 출력)
+    const response = await gemini.models.generateContent({
+      model: "gemini-2.5-pro", // Pro 모델 사용 (더 깊은 분석을 위해)
+      contents: prompt,
+      config: {
+        temperature: 0.8, // 창의적 분석을 위해 높은 temperature
+        responseMimeType: "application/json",
+        responseSchema: riskAnalysisSchema
+        // gemini-2.5-pro는 thinking 모드를 비활성화할 수 없음
+      }
+    });
+
+    console.log('✅ 리스크 분석 완료');
+
+    // JSON 파싱 및 검증
+    let riskAnalysis;
+    try {
+      riskAnalysis = JSON.parse(response.text);
+    } catch (parseError) {
+      console.error('❌ JSON 파싱 오류:', parseError);
+      return res.status(500).json({
+        error: 'Failed to parse risk analysis response',
+        message: 'Invalid JSON format from AI'
+      });
+    }
+
+    // 필수 키 검증
+    const requiredKeys = ['market_risk', 'product_risk', 'competitive_risk'];
+    const missingKeys = requiredKeys.filter(key => !riskAnalysis[key]);
+    if (missingKeys.length > 0) {
+      return res.status(500).json({
+        error: 'Incomplete risk analysis',
+        missingKeys
+      });
+    }
+
+    // 성공 응답
+    res.status(200).json({
+      success: true,
+      data: {
+        riskAnalysis,
+        input: { customer, problem, solution },
+        timestamp: new Date().toISOString()
+      }
+    });
+
+  } catch (error) {
+    console.error('❌ 리스크 분석 오류:', error);
+    
+    res.status(500).json({
+      error: 'Risk analysis failed',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
 });
 
 app.listen(PORT, async () => {

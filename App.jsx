@@ -822,10 +822,616 @@ const IntroSection = () => {
   );
 };
 
+// Lean Canvas Input Modal Component
+const LeanCanvasInputModal = ({ isOpen, onClose, onSubmit }) => {
+  const [formData, setFormData] = useState({
+    customer: '',
+    problem: '',
+    solution: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.customer || !formData.problem || !formData.solution) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await onSubmit(formData);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      customer: '',
+      problem: '',
+      solution: ''
+    });
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-black border border-white/20 rounded-2xl p-6 sm:p-8 w-full max-w-2xl relative max-h-[90vh] overflow-y-auto">
+        <button
+          onClick={() => {
+            onClose();
+            resetForm();
+          }}
+          className="absolute top-4 right-4 text-white/60 hover:text-white focus:outline-none"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        <h2 className="text-2xl font-bold text-white mb-3 text-start">아이디어 구체화</h2>
+        <p className="text-white/70 text-sm text-start mb-6">
+          3가지 질문에 답하시면 AI가 Lean Canvas를 생성해드립니다
+        </p>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block text-white/80 text-sm font-medium mb-3">
+              1. 누구의 문제를 해결하고 싶으신가요? (타겟 고객)
+            </label>
+            <input
+              type="text"
+              name="customer"
+              value={formData.customer}
+              onChange={handleChange}
+              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-white/60 transition-colors"
+              placeholder="예: 강아지를 처음 키우는 초보 견주"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-white/80 text-sm font-medium mb-3">
+              2. 그들은 현재 어떤 가장 큰 어려움을 겪고 있나요? (문제)
+            </label>
+            <textarea
+              name="problem"
+              value={formData.problem}
+              onChange={handleChange}
+              rows={3}
+              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-white/60 transition-colors resize-none"
+              placeholder="예: 어떤 사료를 먹여야 할지 너무 막막해요"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-white/80 text-sm font-medium mb-3">
+              3. 이 문제를 어떻게 해결해줄 수 있을까요? (솔루션)
+            </label>
+            <textarea
+              name="solution"
+              value={formData.solution}
+              onChange={handleChange}
+              rows={3}
+              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-white/60 transition-colors resize-none"
+              placeholder="예: 강아지 종과 나이에 맞는 맞춤 사료 구독 서비스"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={isSubmitting || !formData.customer || !formData.problem || !formData.solution}
+            className="w-full py-3 px-6 bg-white text-black font-semibold rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none"
+          >
+            {isSubmitting ? 'AI가 분석 중...' : 'Lean Canvas 생성하기'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+// Lean Canvas Result Modal Component
+const LeanCanvasResultModal = ({ isOpen, onClose, leanCanvas, isLoading, error, inputData }) => {
+  const [riskAnalysis, setRiskAnalysis] = useState(null);
+  const [isRiskLoading, setIsRiskLoading] = useState(false);
+  const [riskError, setRiskError] = useState(null);
+  const [showRiskAnalysis, setShowRiskAnalysis] = useState(false);
+
+  const handleRiskAnalysis = async () => {
+    if (!inputData) {
+      alert('입력 데이터가 없습니다.');
+      return;
+    }
+
+    setIsRiskLoading(true);
+    setRiskError(null);
+    setShowRiskAnalysis(true);
+
+    try {
+      // API URL 설정 (Vite 프록시 사용)
+      const apiUrl = '/api/risk-analysis';
+        
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(inputData),
+      });
+
+      if (!response.ok) {
+        throw new Error('리스크 분석에 실패했습니다');
+      }
+
+      const result = await response.json();
+      setRiskAnalysis(result.data.riskAnalysis);
+    } catch (err) {
+      setRiskError(err.message);
+    } finally {
+      setIsRiskLoading(false);
+    }
+  };
+
+  const downloadLeanCanvasAsImage = async () => {
+    try {
+      // html2canvas 동적 import
+      const html2canvas = (await import('html2canvas')).default;
+      
+      const element = document.getElementById('lean-canvas-grid');
+      if (!element) {
+        alert('Lean Canvas를 찾을 수 없습니다.');
+        return;
+      }
+
+      // 고해상도 캔버스 생성
+      const canvas = await html2canvas(element, {
+        backgroundColor: '#000000',
+        scale: 2, // 고해상도
+        useCORS: true,
+        allowTaint: true,
+        width: element.scrollWidth,
+        height: element.scrollHeight
+      });
+
+      // 이미지 다운로드
+      const link = document.createElement('a');
+      link.download = `lean-canvas-${new Date().getTime()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch (error) {
+      console.error('다운로드 중 오류 발생:', error);
+      alert('이미지 다운로드 중 오류가 발생했습니다.');
+    }
+  };
+
+  // 리스크 분석 이미지 다운로드 함수
+  const downloadRiskAnalysisAsImage = async () => {
+    try {
+      // html2canvas 동적 import
+      const html2canvas = (await import('html2canvas')).default;
+      
+      const element = document.getElementById('risk-analysis-content');
+      if (!element) {
+        alert('리스크 분석 결과를 찾을 수 없습니다.');
+        return;
+      }
+
+      // 고해상도 캔버스 생성
+      const canvas = await html2canvas(element, {
+        backgroundColor: '#000000',
+        scale: 2, // 고해상도
+        useCORS: true,
+        allowTaint: true,
+        width: element.scrollWidth,
+        height: element.scrollHeight
+      });
+
+      // 이미지 다운로드
+      const link = document.createElement('a');
+      link.download = `risk-analysis-${new Date().getTime()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch (error) {
+      console.error('리스크 분석 다운로드 중 오류 발생:', error);
+      alert('리스크 분석 이미지 다운로드 중 오류가 발생했습니다.');
+    }
+  };
+
+  if (!isOpen) return null;
+
+  const sections = [
+    { key: 'problem', title: '1. 문제 (Problem)', position: 'col-span-1' },
+    { key: 'solution', title: '4. 해결 방안 (Solution)', position: 'col-span-1' },
+    { key: 'unique_value_proposition', title: '3. 고유 가치 제안 (UVP)', position: 'col-span-1' },
+    { key: 'unfair_advantage', title: '9. 경쟁 우위', position: 'col-span-1' },
+    { key: 'customer_segments', title: '2. 고객군', position: 'col-span-1' },
+    { key: 'key_metrics', title: '8. 핵심 지표', position: 'col-span-2' },
+    { key: 'channels', title: '5. 채널', position: 'col-span-3' },
+    { key: 'cost_structure', title: '7. 비용 구조', position: 'col-span-2' },
+    { key: 'revenue_streams', title: '6. 수익원', position: 'col-span-3' }
+  ];
+
+  return (
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-black border border-white/20 rounded-2xl p-6 sm:p-8 w-full max-w-7xl relative max-h-[90vh] overflow-y-auto">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-white/60 hover:text-white focus:outline-none z-10"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        <div className="flex items-center justify-center mb-6 relative">
+          <h2 className="text-2xl font-bold text-white text-center">Lean Canvas</h2>
+          {leanCanvas && !isLoading && !error && (
+            <button
+              onClick={() => downloadLeanCanvasAsImage()}
+              className="absolute left-0 text-white/70 hover:text-white transition-all duration-300"
+              title="이미지로 다운로드"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </button>
+          )}
+        </div>
+
+        {isLoading && (
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+              <p className="text-white/70">AI가 Lean Canvas를 생성하고 있습니다...</p>
+            </div>
+          </div>
+        )}
+
+        {error && (
+          <div className="text-center py-20">
+            <p className="text-red-400 mb-4">오류가 발생했습니다</p>
+            <p className="text-white/60 text-sm">{error}</p>
+          </div>
+        )}
+
+        {leanCanvas && !isLoading && !error && (
+          <div className="relative">
+            {/* 슬라이드 가능한 컨테이너 */}
+            <div className="overflow-x-auto pb-4" style={{ scrollbarWidth: 'thin' }}>
+              <div className="grid grid-cols-5 gap-4 text-sm min-w-[800px]" id="lean-canvas-grid">
+                {/* 첫 번째 행 */}
+                <div className="border border-white/20 rounded-lg p-4 bg-white/5">
+                  <h3 className="font-semibold text-white mb-3 text-base">1. 문제 (Problem)</h3>
+                  <ul className="space-y-2">
+                    {leanCanvas.problem?.map((item, index) => (
+                      <li key={index} className="text-white/80 text-sm leading-relaxed">
+                        • {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="border border-white/20 rounded-lg p-4 bg-white/5">
+                  <h3 className="font-semibold text-white mb-3 text-base">4. 해결 방안 (Solution)</h3>
+                  <ul className="space-y-2">
+                    {leanCanvas.solution?.map((item, index) => (
+                      <li key={index} className="text-white/80 text-sm leading-relaxed">
+                        • {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="border border-white/20 rounded-lg p-4 bg-white/5">
+                  <h3 className="font-semibold text-white mb-3 text-base">3. 고유 가치 제안 (UVP)</h3>
+                  <ul className="space-y-2">
+                    {leanCanvas.unique_value_proposition?.map((item, index) => (
+                      <li key={index} className="text-white/80 text-sm leading-relaxed">
+                        • {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="border border-white/20 rounded-lg p-4 bg-white/5">
+                  <h3 className="font-semibold text-white mb-3 text-base">9. 경쟁 우위</h3>
+                  <ul className="space-y-2">
+                    {leanCanvas.unfair_advantage?.map((item, index) => (
+                      <li key={index} className="text-white/80 text-sm leading-relaxed">
+                        • {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="border border-white/20 rounded-lg p-4 bg-white/5">
+                  <h3 className="font-semibold text-white mb-3 text-base">2. 고객군</h3>
+                  <ul className="space-y-2">
+                    {leanCanvas.customer_segments?.map((item, index) => (
+                      <li key={index} className="text-white/80 text-sm leading-relaxed">
+                        • {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* 두 번째 행 */}
+                <div className="col-span-2 border border-white/20 rounded-lg p-4 bg-white/5">
+                  <h3 className="font-semibold text-white mb-3 text-base">8. 핵심 지표 (Key Metrics)</h3>
+                  <ul className="space-y-2">
+                    {leanCanvas.key_metrics?.map((item, index) => (
+                      <li key={index} className="text-white/80 text-sm leading-relaxed">
+                        • {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="col-span-3 border border-white/20 rounded-lg p-4 bg-white/5">
+                  <h3 className="font-semibold text-white mb-3 text-base">5. 채널 (Channels)</h3>
+                  <ul className="space-y-2">
+                    {leanCanvas.channels?.map((item, index) => (
+                      <li key={index} className="text-white/80 text-sm leading-relaxed">
+                        • {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* 세 번째 행 */}
+                <div className="col-span-2 border border-white/20 rounded-lg p-4 bg-white/5">
+                  <h3 className="font-semibold text-white mb-3 text-base">7. 비용 구조 (Cost Structure)</h3>
+                  <ul className="space-y-2">
+                    {leanCanvas.cost_structure?.map((item, index) => (
+                      <li key={index} className="text-white/80 text-sm leading-relaxed">
+                        • {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="col-span-3 border border-white/20 rounded-lg p-4 bg-white/5">
+                  <h3 className="font-semibold text-white mb-3 text-base">6. 수익원 (Revenue Streams)</h3>
+                  <ul className="space-y-2">
+                    {leanCanvas.revenue_streams?.map((item, index) => (
+                      <li key={index} className="text-white/80 text-sm leading-relaxed">
+                        • {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 리스크 분석 섹션 */}
+        {leanCanvas && !isLoading && !error && (
+          <div className="mt-12 border-t border-white/10 pt-8">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center">
+                <h3 className="text-xl font-bold text-white">🚨 핵심 리스크 분석</h3>
+                {riskAnalysis && !isRiskLoading && !riskError && (
+                  <button
+                    onClick={() => downloadRiskAnalysisAsImage()}
+                    className="ml-4 text-white/70 hover:text-white transition-all duration-300"
+                    title="이미지로 다운로드"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+              <button
+                onClick={handleRiskAnalysis}
+                disabled={isRiskLoading}
+                className="px-6 py-2 bg-red-600/20 border border-red-400/30 text-red-300 rounded-lg hover:bg-red-600/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isRiskLoading ? '분석 중...' : '리스크 분석하기'}
+              </button>
+            </div>
+
+            {/* 리스크 분석 결과 */}
+            {showRiskAnalysis && (
+              <div>
+                {isRiskLoading && (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="text-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-400 mx-auto mb-4"></div>
+                      <p className="text-white/70 text-sm">AI가 핵심 리스크를 분석하고 있습니다...</p>
+                    </div>
+                  </div>
+                )}
+
+                {riskError && (
+                  <div className="text-center py-12">
+                    <p className="text-red-400 mb-2">리스크 분석 중 오류가 발생했습니다</p>
+                    <p className="text-white/60 text-sm">{riskError}</p>
+                  </div>
+                )}
+
+                {riskAnalysis && !isRiskLoading && !riskError && (
+                  <div id="risk-analysis-content" className="grid gap-6 md:grid-cols-1 lg:grid-cols-3">
+                    {/* Market Risk */}
+                    <div className="border border-red-400/30 rounded-lg p-6 bg-red-600/5">
+                      <div className="flex items-center mb-4">
+                        <div className={`w-3 h-3 rounded-full mr-3 ${
+                          riskAnalysis.market_risk.risk_level === 'HIGH' ? 'bg-red-500' :
+                          riskAnalysis.market_risk.risk_level === 'MEDIUM' ? 'bg-yellow-500' : 'bg-green-500'
+                        }`}></div>
+                        <h4 className="text-lg font-semibold text-red-300">
+                          {riskAnalysis.market_risk.title}
+                        </h4>
+                      </div>
+                      
+                      <div className="space-y-3 text-sm">
+                        <div>
+                          <span className="text-white/60">당신의 가정:</span>
+                          <p className="text-white/80 mt-1">{riskAnalysis.market_risk.assumption}</p>
+                        </div>
+                        
+                        <div>
+                          <span className="text-red-300">실제 불확실성:</span>
+                          <p className="text-white/80 mt-1">{riskAnalysis.market_risk.uncertainty}</p>
+                        </div>
+                        
+                        <div>
+                          <span className="text-white/60">잠재적 영향:</span>
+                          <p className="text-white/80 mt-1">{riskAnalysis.market_risk.impact}</p>
+                        </div>
+                        
+                        <div className="bg-white/5 p-3 rounded-lg">
+                          <span className="text-blue-300">💡 검증 방법:</span>
+                          <p className="text-white/80 mt-1">{riskAnalysis.market_risk.validation_method}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Product Risk */}
+                    <div className="border border-red-400/30 rounded-lg p-6 bg-red-600/5">
+                      <div className="flex items-center mb-4">
+                        <div className={`w-3 h-3 rounded-full mr-3 ${
+                          riskAnalysis.product_risk.risk_level === 'HIGH' ? 'bg-red-500' :
+                          riskAnalysis.product_risk.risk_level === 'MEDIUM' ? 'bg-yellow-500' : 'bg-green-500'
+                        }`}></div>
+                        <h4 className="text-lg font-semibold text-red-300">
+                          {riskAnalysis.product_risk.title}
+                        </h4>
+                      </div>
+                      
+                      <div className="space-y-3 text-sm">
+                        <div>
+                          <span className="text-white/60">당신의 가정:</span>
+                          <p className="text-white/80 mt-1">{riskAnalysis.product_risk.assumption}</p>
+                        </div>
+                        
+                        <div>
+                          <span className="text-orange-300">실제 불확실성:</span>
+                          <p className="text-white/80 mt-1">{riskAnalysis.product_risk.uncertainty}</p>
+                        </div>
+                        
+                        <div>
+                          <span className="text-white/60">잠재적 영향:</span>
+                          <p className="text-white/80 mt-1">{riskAnalysis.product_risk.impact}</p>
+                        </div>
+                        
+                        <div className="bg-white/5 p-3 rounded-lg">
+                          <span className="text-blue-300">💡 검증 방법:</span>
+                          <p className="text-white/80 mt-1">{riskAnalysis.product_risk.validation_method}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Competitive Risk */}
+                    <div className="border border-red-400/30 rounded-lg p-6 bg-red-600/5">
+                      <div className="flex items-center mb-4">
+                        <div className={`w-3 h-3 rounded-full mr-3 ${
+                          riskAnalysis.competitive_risk.risk_level === 'HIGH' ? 'bg-red-500' :
+                          riskAnalysis.competitive_risk.risk_level === 'MEDIUM' ? 'bg-yellow-500' : 'bg-green-500'
+                        }`}></div>
+                        <h4 className="text-lg font-semibold text-red-300">
+                          {riskAnalysis.competitive_risk.title}
+                        </h4>
+                      </div>
+                      
+                      <div className="space-y-3 text-sm">
+                        <div>
+                          <span className="text-white/60">당신의 가정:</span>
+                          <p className="text-white/80 mt-1">{riskAnalysis.competitive_risk.assumption}</p>
+                        </div>
+                        
+                        <div>
+                          <span className="text-purple-300">실제 불확실성:</span>
+                          <p className="text-white/80 mt-1">{riskAnalysis.competitive_risk.uncertainty}</p>
+                        </div>
+                        
+                        <div>
+                          <span className="text-white/60">잠재적 영향:</span>
+                          <p className="text-white/80 mt-1">{riskAnalysis.competitive_risk.impact}</p>
+                        </div>
+                        
+                        <div className="bg-white/5 p-3 rounded-lg">
+                          <span className="text-blue-300">💡 검증 방법:</span>
+                          <p className="text-white/80 mt-1">{riskAnalysis.competitive_risk.validation_method}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+      </div>
+    </div>
+  );
+};
+
 // Stage Section Component
 const StageSection = () => {
   const [currentStage, setCurrentStage] = useState('pre-product');
   const [selectedItem, setSelectedItem] = useState(null);
+  const [isLeanCanvasInputOpen, setIsLeanCanvasInputOpen] = useState(false);
+  const [isLeanCanvasResultOpen, setIsLeanCanvasResultOpen] = useState(false);
+  const [leanCanvas, setLeanCanvas] = useState(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState(null);
+  const [inputData, setInputData] = useState(null);
+
+  const handleLeanCanvasSubmit = async (formData) => {
+    setIsGenerating(true);
+    setError(null);
+    setInputData(formData); // 입력 데이터 저장
+    setIsLeanCanvasInputOpen(false);
+    setIsLeanCanvasResultOpen(true);
+
+    try {
+      // API URL 설정 (Vite 프록시 사용)
+      const apiUrl = '/api/lean-canvas';
+        
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Lean Canvas 생성에 실패했습니다');
+      }
+
+      const result = await response.json();
+      setLeanCanvas(result.data.leanCanvas);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleTestScenarioClick = () => {
+    if (selectedItem === 'pre-product-0') { // 문제정의 및 아이디어 구체화 선택된 경우
+      setIsLeanCanvasInputOpen(true);
+    } else {
+      // 다른 항목들은 기본 동작 (추후 확장 가능)
+      alert('해당 기능은 준비 중입니다.');
+    }
+  };
   
   const stages = [
     {
@@ -971,6 +1577,7 @@ const StageSection = () => {
             {/* Desktop Bottom Button */}
             <div className="flex justify-end mt-12">
               <button
+                onClick={handleTestScenarioClick}
                 className={`w-full px-8 py-3 font-medium rounded-lg transition-all duration-300 ${
                   selectedItem
                     ? 'bg-white text-black hover:bg-gray-100'
@@ -1052,6 +1659,7 @@ const StageSection = () => {
         {/* Bottom Button */}
         <div className="flex justify-center mt-12">
           <button
+            onClick={handleTestScenarioClick}
             className={`w-full sm:w-auto px-8 py-3 font-medium rounded-lg transition-all duration-300 ${
               selectedItem
                 ? 'bg-white text-black hover:bg-gray-100'
@@ -1063,6 +1671,27 @@ const StageSection = () => {
           </div>
         </div>
       </div>
+
+      {/* Lean Canvas Modals */}
+      <LeanCanvasInputModal
+        isOpen={isLeanCanvasInputOpen}
+        onClose={() => setIsLeanCanvasInputOpen(false)}
+        onSubmit={handleLeanCanvasSubmit}
+      />
+
+      <LeanCanvasResultModal
+        isOpen={isLeanCanvasResultOpen}
+        onClose={() => {
+          setIsLeanCanvasResultOpen(false);
+          setLeanCanvas(null);
+          setError(null);
+          setInputData(null);
+        }}
+        leanCanvas={leanCanvas}
+        isLoading={isGenerating}
+        error={error}
+        inputData={inputData}
+      />
     </section>
   );
 };
@@ -1784,10 +2413,10 @@ const TesterRecruitmentSection = ({ onOpenPilotModal }) => {
             </div>
             
             {/* Button at the bottom */}
-            <div className="flex justify-left mt-12 fade-in">
+            <div className="flex justify-center mt-12 fade-in">
             <button
                 onClick={onOpenPilotModal}
-                className="w-full sm:w-auto px-8 py-4 border border-white text-white font-semibold text-lg rounded-lg hover:bg-white hover:text-black transition-all duration-300 focus:outline-none"
+                className="w-full sm:w-96 lg:w-[500px] px-8 py-4 border border-white text-white font-semibold text-lg rounded-lg hover:bg-white hover:text-black transition-all duration-300 focus:outline-none"
             >
                 지금 파일럿 되기
             </button>
