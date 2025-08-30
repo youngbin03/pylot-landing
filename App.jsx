@@ -719,7 +719,7 @@ const OnboardingSection = () => {
         </svg>
             </button>
                 </div>
-              </div>
+      </div>
 
         {/* Third Problem */}
         <div className="mb-6 fade-in">
@@ -805,7 +805,7 @@ const IntroSection = () => {
                           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight mb-6 fade-in">
                 그 아이디어, 성공할까요?<br />
                 <span className="text-base sm:text-base lg:text-lg font-light space-y-0.5 block"><br/>이제 데이터로 증명하고 확신으로 출시하세요.<br />Pylot은 아이디어 검증부터 UX 테스트까지<br />성공적인 시장 출시를 위한 단 하나의 솔루션입니다.</span>
-              </h2>
+          </h2>
             <div className="fade-in">
               <button className="px-6 py-3 border border-white/30 text-white text-lg font-medium rounded-lg hover:bg-white hover:text-black transition-all duration-300 focus:outline-none">
                 더알아보기
@@ -815,7 +815,7 @@ const IntroSection = () => {
             
             </p>
             
-          </div>
+        </div>
         </div>
       </div>
     </section>
@@ -897,7 +897,7 @@ const LeanCanvasInputModal = ({ isOpen, onClose, onSubmit }) => {
               placeholder="예: 강아지를 처음 키우는 초보 견주"
               required
             />
-          </div>
+                </div>
 
           <div>
             <label className="block text-white/80 text-sm font-medium mb-3">
@@ -912,7 +912,7 @@ const LeanCanvasInputModal = ({ isOpen, onClose, onSubmit }) => {
               placeholder="예: 어떤 사료를 먹여야 할지 너무 막막해요"
               required
             />
-          </div>
+              </div>
 
           <div>
             <label className="block text-white/80 text-sm font-medium mb-3">
@@ -927,7 +927,7 @@ const LeanCanvasInputModal = ({ isOpen, onClose, onSubmit }) => {
               placeholder="예: 강아지 종과 나이에 맞는 맞춤 사료 구독 서비스"
               required
             />
-          </div>
+            </div>
 
           <button
             type="submit"
@@ -937,8 +937,8 @@ const LeanCanvasInputModal = ({ isOpen, onClose, onSubmit }) => {
             {isSubmitting ? 'AI가 분석 중...' : 'Lean Canvas 생성하기'}
           </button>
         </form>
+        </div>
       </div>
-    </div>
   );
 };
 
@@ -1088,14 +1088,14 @@ const LeanCanvasResultModal = ({ isOpen, onClose, leanCanvas, isLoading, error, 
               </svg>
             </button>
           )}
-        </div>
-
+      </div>
+      
         {isLoading && (
           <div className="flex items-center justify-center py-20">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
               <p className="text-white/70">AI가 Lean Canvas를 생성하고 있습니다...</p>
-            </div>
+        </div>
           </div>
         )}
 
@@ -1103,7 +1103,7 @@ const LeanCanvasResultModal = ({ isOpen, onClose, leanCanvas, isLoading, error, 
           <div className="text-center py-20">
             <p className="text-red-400 mb-4">오류가 발생했습니다</p>
             <p className="text-white/60 text-sm">{error}</p>
-          </div>
+                  </div>
         )}
 
         {leanCanvas && !isLoading && !error && (
@@ -1132,7 +1132,7 @@ const LeanCanvasResultModal = ({ isOpen, onClose, leanCanvas, isLoading, error, 
                       </li>
                     ))}
                   </ul>
-                </div>
+                    </div>
 
                 <div className="border border-white/20 rounded-lg p-4 bg-white/5">
                   <h3 className="font-semibold text-white mb-3 text-base">3. 고유 가치 제안 (UVP)</h3>
@@ -1143,7 +1143,7 @@ const LeanCanvasResultModal = ({ isOpen, onClose, leanCanvas, isLoading, error, 
                       </li>
                     ))}
                   </ul>
-                </div>
+                  </div>
 
                 <div className="border border-white/20 rounded-lg p-4 bg-white/5">
                   <h3 className="font-semibold text-white mb-3 text-base">9. 경쟁 우위</h3>
@@ -1154,7 +1154,7 @@ const LeanCanvasResultModal = ({ isOpen, onClose, leanCanvas, isLoading, error, 
                       </li>
                     ))}
                   </ul>
-                </div>
+                    </div>
 
                 <div className="border border-white/20 rounded-lg p-4 bg-white/5">
                   <h3 className="font-semibold text-white mb-3 text-base">2. 고객군</h3>
@@ -1165,7 +1165,7 @@ const LeanCanvasResultModal = ({ isOpen, onClose, leanCanvas, isLoading, error, 
                       </li>
                     ))}
                   </ul>
-                </div>
+                    </div>
 
                 {/* 두 번째 행 */}
                 <div className="col-span-2 border border-white/20 rounded-lg p-4 bg-white/5">
@@ -1188,7 +1188,7 @@ const LeanCanvasResultModal = ({ isOpen, onClose, leanCanvas, isLoading, error, 
                       </li>
                     ))}
                   </ul>
-                </div>
+              </div>
 
                 {/* 세 번째 행 */}
                 <div className="col-span-2 border border-white/20 rounded-lg p-4 bg-white/5">
@@ -1224,17 +1224,17 @@ const LeanCanvasResultModal = ({ isOpen, onClose, leanCanvas, isLoading, error, 
               <div className="flex items-center">
                 <h3 className="text-xl font-bold text-white">🚨 핵심 리스크 분석</h3>
                 {riskAnalysis && !isRiskLoading && !riskError && (
-                  <button
+              <button
                     onClick={() => downloadRiskAnalysisAsImage()}
                     className="ml-4 text-white/70 hover:text-white transition-all duration-300"
                     title="이미지로 다운로드"
-                  >
+              >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                  </button>
+              </button>
                 )}
-              </div>
+            </div>
               <button
                 onClick={handleRiskAnalysis}
                 disabled={isRiskLoading}
@@ -1242,8 +1242,8 @@ const LeanCanvasResultModal = ({ isOpen, onClose, leanCanvas, isLoading, error, 
               >
                 {isRiskLoading ? '분석 중...' : '리스크 분석하기'}
               </button>
-            </div>
-
+          </div>
+          
             {/* 리스크 분석 결과 */}
             {showRiskAnalysis && (
               <div>
@@ -1252,15 +1252,15 @@ const LeanCanvasResultModal = ({ isOpen, onClose, leanCanvas, isLoading, error, 
                     <div className="text-center">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-400 mx-auto mb-4"></div>
                       <p className="text-white/70 text-sm">AI가 핵심 리스크를 분석하고 있습니다...</p>
-                    </div>
+              </div>
                   </div>
                 )}
-
+              
                 {riskError && (
                   <div className="text-center py-12">
                     <p className="text-red-400 mb-2">리스크 분석 중 오류가 발생했습니다</p>
                     <p className="text-white/60 text-sm">{riskError}</p>
-                  </div>
+            </div>
                 )}
 
                 {riskAnalysis && !isRiskLoading && !riskError && (
@@ -1275,18 +1275,18 @@ const LeanCanvasResultModal = ({ isOpen, onClose, leanCanvas, isLoading, error, 
                         <h4 className="text-lg font-semibold text-red-300">
                           {riskAnalysis.market_risk.title}
                         </h4>
-                      </div>
+          </div>
                       
                       <div className="space-y-3 text-sm">
                         <div>
                           <span className="text-white/60">당신의 가정:</span>
                           <p className="text-white/80 mt-1">{riskAnalysis.market_risk.assumption}</p>
-                        </div>
+        </div>
                         
                         <div>
                           <span className="text-red-300">실제 불확실성:</span>
                           <p className="text-white/80 mt-1">{riskAnalysis.market_risk.uncertainty}</p>
-                        </div>
+      </div>
                         
                         <div>
                           <span className="text-white/60">잠재적 영향:</span>
@@ -1504,7 +1504,7 @@ const StageSection = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-12 fade-in">
           당신의 아이디어는<br/>어느 단계에 있나요?
-          </h2>
+        </h2>
 
         {/* Desktop Layout */}
         <div className="hidden lg:flex justify-end mb-12">
@@ -1607,7 +1607,7 @@ const StageSection = () => {
                 {stage.title}
               </button>
             ))}
-              </div>
+            </div>
               
           {/* Stage Content */}
           <div className="space-y-4 max-w-4xl">
@@ -1629,8 +1629,8 @@ const StageSection = () => {
                           #{tag}
                         </span>
                       ))}
-            </div>
-                  </div>
+          </div>
+        </div>
                   <div className="relative w-5 h-5 flex-shrink-0 min-h-0">
                     <div className={`absolute inset-0 rounded-full border-2 transition-all duration-200 ${
                       selectedItem === currentStage + '-' + index
@@ -1650,7 +1650,7 @@ const StageSection = () => {
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
                     )}
-                  </div>
+      </div>
                 </div>
             </div>
           ))}
@@ -1783,7 +1783,7 @@ const PricingSection = ({ onOpenModal }) => {
             >
               플랜 확인하기
             </button>
-        </div>
+              </div>
         )}
 
         {/* Plan Details */}
@@ -1815,7 +1815,7 @@ const PricingSection = ({ onOpenModal }) => {
                     <div className="flex-1">
                       <div className="font-semibold text-white mb-1">[{stage.title}]</div>
                       <div className="text-white/70 text-sm">{stage.description}</div>
-                </div>
+            </div>
                     <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                       selectedStage === stage.id ? 'border-white bg-white' : 'border-white/50'
                     }`}>
@@ -1824,9 +1824,9 @@ const PricingSection = ({ onOpenModal }) => {
                       )}
               </div>
                   </label>
-                ))}
-                    </div>
-                  </div>
+          ))}
+        </div>
+      </div>
 
             {/* Number of Testers */}
             <div>
@@ -1866,7 +1866,7 @@ const PricingSection = ({ onOpenModal }) => {
                       </option>
                     ))}
                   </select>
-                    </div>
+            </div>
 
                 {/* Gender Selection */}
                 <div>
@@ -1890,8 +1890,8 @@ const PricingSection = ({ onOpenModal }) => {
                       </button>
                       ))}
             </div>
-          </div>
-          
+        </div>
+        
                 {/* Detailed Target */}
                 <div>
                   <label className="block text-white/80 mb-2">상세타겟</label>
@@ -2181,7 +2181,7 @@ const SolutionSection = ({ onOpenModal }) => {
             </div>
           ))}
         </div>
-      </div>
+        </div>
         
           {/* Desktop View */}
           <div 
@@ -2322,7 +2322,7 @@ const TesterRecruitmentSection = ({ onOpenPilotModal }) => {
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white my-6 fade-in">
               스마트폰 15분, 새로운 수익
-        </h2>
+          </h2>
         
             <p className="text-lg sm:text-lg font-medium text-white mb-6 fade-in">
               당신의 경험을 가치로 만들어보세요
